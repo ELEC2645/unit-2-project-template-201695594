@@ -7,18 +7,23 @@ enum converter_type {BUCK, BOOST, BUCKBOOST, CUK};
 typedef struct /*Converter parameters*/
 {
     /* data */
-    float V_out[2];
-    float V_in[2];
-    float I_out[2];
-    float I_in[2];
+    char save_name[64];
+    float V_out;
+    float V_in;
+    float I_out;
+    float I_in;
     float I_rip;
     float V_rip;
-    float R_load[2];
-    float F_switch[2];
+    float R_load;
+    float F_switch;
     int type;
-} converter_param;
+    int ccm;
+    float k;
+} converter_spec;
+
+
 
 /*BUCK converter functions*/
-void ccm_buck_duty(converter_param *target);
+
 
 #endif /*CONVERTER_H*/
