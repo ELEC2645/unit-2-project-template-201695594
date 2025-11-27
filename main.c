@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <math.h>
 #include "funcs.h"
+#include "converter.h"
 
 /* Prototypes mirroring the C++ version */
 static void main_menu(void);            /* runs in the main loop */
@@ -15,6 +16,8 @@ static int  get_user_input(void);       /* get a valid integer menu choice */
 static void select_menu_item(int input);/* run code based on user's choice */
 static void go_back_to_main(void);      /* wait for 'b'/'B' to continue */
 static int  is_integer(const char *s);  /* validate integer string */
+
+converter active;
 
 int main(void)
 {
@@ -74,23 +77,23 @@ static void select_menu_item(int input)
 {
     switch (input) {
         case 1:
-            menu_item_1();
+            menu_item_1(&active);
             go_back_to_main();
             break;
         case 2:
-            menu_item_2();
+            menu_item_2(&active);
             go_back_to_main();
             break;
         case 3:
-            menu_item_3();
+            menu_item_3(&active);
             go_back_to_main();
             break;
         case 4:
-            menu_item_4();
+            menu_item_4(&active);
             go_back_to_main();
             break;
         case 5:
-            menu_item_5();
+            menu_item_5(&active);
             go_back_to_main();
         default:
             printf("Bye!\n");
@@ -103,8 +106,8 @@ static void print_main_menu(void)
     printf("\n----------- Main menu -----------\n");
     printf("\n"
            "\t\t\t\t\t\t\n"
-           "\t1. New Buck Converter\t\t\n"
-           "\t2. New Boost Converter\t\t\n"
+           "\t1. Select converter type\t\t\n"
+           "\t2. Input converter parameters\t\t\n"
            "\t3. New Buck-Boost Converter\t\t\n"
            "\t4. New Cuk Converter\t\t\n"
            "\t5. Load saved design\t\t\t\t\n"
