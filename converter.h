@@ -23,7 +23,4 @@ typedef struct /*Converter parameters*/
 
 
 
-/*BUCK converter functions*/
-
-
 #endif /*CONVERTER_H*/

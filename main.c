@@ -14,8 +14,7 @@ static void main_menu(void);            /* runs in the main loop */
 static void print_main_menu(void);      /* output the main menu description */
 static int  get_user_input(void);       /* get a valid integer menu choice */
 static void select_menu_item(int input);/* run code based on user's choice */
-static void go_back_to_main(void);      /* wait for 'b'/'B' to continue */
-static int  is_integer(const char *s);  /* validate integer string */
+static void go_back_to_main(void);      /* wait for 'b'/'B' to continue */ 
 
 converter active;
 
@@ -81,18 +80,22 @@ static void select_menu_item(int input)
             go_back_to_main();
             break;
         case 2:
+            if (*active.name == '\0') {printf("Please set design name");go_back_to_main();}
             menu_item_2(&active);
             go_back_to_main();
             break;
         case 3:
+            if (*active.name == '\0') {printf("Please set design name");go_back_to_main();}
             menu_item_3(&active);
             go_back_to_main();
             break;
         case 4:
+            if (*active.name == '\0') {printf("Please set design name");go_back_to_main();}
             menu_item_4(&active);
             go_back_to_main();
             break;
         case 5:
+            if (*active.name == '\0') {printf("Please set design name");go_back_to_main();}
             menu_item_5(&active);
             go_back_to_main();
         default:
@@ -106,10 +109,10 @@ static void print_main_menu(void)
     printf("\n----------- Main menu -----------\n");
     printf("\n"
            "\t\t\t\t\t\t\n"
-           "\t1. Select converter type\t\t\n"
+           "\t1. Set converter type and name\t\t\n"
            "\t2. Input converter parameters\t\t\n"
-           "\t3. New Buck-Boost Converter\t\t\n"
-           "\t4. New Cuk Converter\t\t\n"
+           "\t3. Edit converter parameters\t\t\n"
+           "\t4. Compute design\t\t\n"
            "\t5. Load saved design\t\t\t\t\n"
            "\t6. Exit\t\t\t\t\n"
            "\t\t\t\t\t\t\n");
@@ -129,20 +132,3 @@ static void go_back_to_main(void)
     } while (!(buf[0] == 'b' || buf[0] == 'B') || buf[1] != '\0');
 }
 
-/* Return 1 if s is an optional [+/-] followed by one-or-more digits, else 0. */
-static int is_integer(const char *s)
-{
-    if (!s || !*s) return 0;
-
-    /* optional sign */
-    if (*s == '+' || *s == '-') s++;
-
-    /* must have at least one digit */
-    if (!isdigit((unsigned char)*s)) return 0;
-
-    while (*s) {
-        if (!isdigit((unsigned char)*s)) return 0;
-        s++;
-    }
-    return 1;
-}

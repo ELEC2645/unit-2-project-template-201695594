@@ -24,13 +24,17 @@ typedef struct {
 } converter;
 
 
+int is_integer(const char *s);
+
 void menu_item_1(converter *active);
 void menu_item_2(converter *active);
 void menu_item_3(converter *active);
 void menu_item_4(converter *active);
 void menu_item_5(converter *active);
 
-float get_float_input();
+float get_float_input(void);
+int get_int_input(int max);
+
 void print_converter(converter *active);
 
 #endif
