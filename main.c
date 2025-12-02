@@ -6,7 +6,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include <locale.h>
 #include "funcs.h"
+#include "colours.h"
 #include "converter.h"
 
 /* Prototypes mirroring the C++ version */
@@ -20,6 +22,7 @@ converter active;
 
 int main(void)
 {
+    setlocale(LC_ALL, "");
     /* this will run forever until we call exit(0) in select_menu_item() */
     for(;;) {
         main_menu();
@@ -106,7 +109,7 @@ static void select_menu_item(int input)
 
 static void print_main_menu(void)
 {
-    printf("\n----------- Main menu -----------\n");
+    printf(MAGENTA"\n----------- Main menu -----------\n"RESET);
     printf("\n"
            "\t\t\t\t\t\t\n"
            "\t1. Set converter type and name\t\t\n"

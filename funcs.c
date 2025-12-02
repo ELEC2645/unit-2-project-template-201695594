@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "colours.h"
 #include "funcs.h"
 
 enum conv_fields {V_O, V_I, I_O, I_I, R_L, F_S, D_I, D_V, D_I2 ,D_V2, L, C_O, L2, C_N};
@@ -26,56 +27,21 @@ void menu_item_1(converter *active) {
     printf("1\n");
     active->name[sizeof(active->name)-1] = '\0';
     printf("Design saved under: %s\n", active->name);
-    do {
-        printf("Please select converter type:\n"
-            "1. Buck\n"
-            "2. Boost\n"
-            );
-    if (!fgets(buf, sizeof(buf), stdin)) {
-            /* EOF or error; bail out gracefully */
-            puts("\nInput error. Exiting.");
-            exit(1);
-        }
-    // strip trailing newline
-    buf[strcspn(buf, "\r\n")] = '\0';
-    if (buf[0] == '1' || buf[0] == '2'){
-        active->type = (int)strtol(buf, NULL, 10);
-    }
-    else {
-        printf("Invalid input\n");
-        active->type = 0;
-    }
-    } while (!active->type);
-
+    printf(u8"Please select converter type:\n"
+        RED"1. Buck\n"
+        GREEN"2. Boost\n"
+        BLUE"3. Buck-Boost\n"
+        YELLOW"4. Cuk\n"RESET
+        );
+    active->type = get_int_input(4);
 }
 
 void menu_item_2(converter *active) {
-    int fields = 0;
-    float vals[9] = { 0 };
     printf("\n>> New %s Converter\n", conv_types[active->type - 1]);
     printf("\nPlease enter the prompted values for your  converter\nLeave unknown values blank\n");
-    do {
-        printf("%s: ", input_fields[fields]);
-        float val = get_float_input();
-        if (val < -1){
-            printf("Invalid input, please enter a positve float\n");
-        }
-        else {
-            // save v_out
-            vals[fields] = val;
-            fields++;
-        }
-    } while (fields < sizeof(input_fields)/ sizeof(input_fields[0]));
-    active->V_o = vals[0];
-    active->V_i = vals[1];
-    active->I_o = vals[2];
-    active->I_i = vals[3];
-    active->R_l = vals[4];
-    active->F_s = vals[5];
-    active->i_rip = vals[5];
-    active->v_rip = vals[6];
-    active->i_rip2 = vals[7];
-    active->v_rip2 = vals[8];
+    for (int i = 0; i < sizeof(input_fields)/ sizeof(input_fields[0]); i++){
+        edit_param(active, i);
+    }
     printf("\n Entered converter specs:\n");
     print_converter(active);
 }
@@ -87,63 +53,9 @@ void menu_item_3(converter *active) {
     print_converter(active);
     printf("Enter option:");
     int param = get_int_input(sizeof(input_fields)/ sizeof(input_fields[0])) - 1;
-    printf("Enter new value for %s", input_fields[param]);
-    switch (param)
-    {
-    case V_O:
-        printf("\nEnter a new V_o value: ");
-        active->V_o = get_float_input();
-        printf("\nV_o changed to: %.4f", active->V_o);
-        break;
-    case V_I:
-        printf("\nEnter a new V_i value: ");
-        active->V_i = get_float_input();
-        printf("\nV_o changed to: %.4f", active->V_i);
-        break;
-    case I_O:
-        printf("\nEnter a new I_o value: ");
-        active->I_o = get_float_input();
-        printf("\nV_o changed to: %.4f", active->I_o);
-        break;
-    case I_I:
-        printf("\nEnter a new I_i value: ");
-        active->I_i = get_float_input();
-        printf("\nV_o changed to: %.4f", active->I_i);
-        break;
-    case R_L:
-        printf("\nEnter a new R_l value: ");
-        active->R_l = get_float_input();
-        printf("\nV_o changed to: %.4f", active->R_l);
-        break;
-    case F_S:
-        printf("\nEnter a new V_o value: ");
-        active->F_s = get_float_input();
-        printf("\nV_o changed to: %.4f", active->F_s);
-        break;
-    case D_I:
-        printf("\nEnter a new delta_i value: ");
-        active->i_rip = get_float_input();
-        printf("\nV_o changed to: %.4f", active->i_rip);
-        break;
-    case D_V:
-        printf("\nEnter a new delta_v value: ");
-        active->v_rip = get_float_input();
-        printf("\nV_o changed to: %.4f", active->v_rip);
-        break;
-    case D_I2:
-        printf("\nEnter a new delta_i2 value: ");
-        active->i_rip2 = get_float_input();
-        printf("\nV_o changed to: %.4f", active->i_rip2);
-        break;
-    case D_V2:
-        printf("\nEnter a new delta_v2 value: ");
-        active->v_rip2 = get_float_input();
-        printf("\nV_o changed to: %.4f", active->v_rip2);
-        break;    
-    default:
-        printf("Invalid Selection");
-        break;
-    }
+    edit_param(active, param);
+    
+    
     /* you can call a function from here that handles menu 3 */
 }
 
@@ -249,3 +161,65 @@ int get_int_input(int max) {
     return value;
 }
 
+void edit_param(converter *active, int field) {
+    switch (field)
+    {
+    case V_O:
+        printf("\nEnter a new V_o value: ");
+        active->V_o = get_float_input();
+        printf("\nV_o changed to: %.4f", active->V_o);
+        break;
+    case V_I:
+        printf("\nEnter a new V_i value: ");
+        active->V_i = get_float_input();
+        printf("\nV_i changed to: %.4f", active->V_i);
+        break;
+    case I_O:
+        printf("\nEnter a new I_o value: ");
+        active->I_o = get_float_input();
+        printf("\nI_o changed to: %.4f", active->I_o);
+        break;
+    case I_I:
+        printf("\nEnter a new I_i value: ");
+        active->I_i = get_float_input();
+        printf("\nI_i changed to: %.4f", active->I_i);
+        break;
+    case R_L:
+        printf("\nEnter a new R_l value: ");
+        active->R_l = get_float_input();
+        printf("\nR_l changed to: %.4f", active->R_l);
+        break;
+    case F_S:
+        printf("\nEnter a new F_s value: ");
+        active->F_s = get_float_input();
+        printf("\nF_s changed to: %.4f", active->F_s);
+        break;
+    case D_I:
+        printf("\nEnter a new delta_i value: ");
+        active->i_rip = get_float_input();
+        printf("\ndelta_i changed to: %.4f", active->i_rip);
+        break;
+    case D_V:
+        printf("\nEnter a new delta_v value: ");
+        active->v_rip = get_float_input();
+        printf("\ndelta_v changed to: %.4f", active->v_rip);
+        break;
+    case D_I2:
+        if (active->type > 2){
+            printf("\nEnter a new delta_i2 value: ");
+            active->i_rip2 = get_float_input();
+            printf("\ndelta_i2 changed to: %.4f", active->i_rip2);
+            break;
+        } else {active->i_rip2 = -2; break;}
+    case D_V2:
+        if (active->type > 2){
+            printf("\nEnter a new delta_v2 value: ");
+            active->v_rip2 = get_float_input();
+            printf("\ndelta_v2 changed to: %.4f", active->v_rip2);
+            break;
+        } else {active->v_rip2 = -2; break;} 
+    default:
+        printf("Invalid Selection");
+        break;
+    }
+}

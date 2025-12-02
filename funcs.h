@@ -37,4 +37,6 @@ int get_int_input(int max);
 
 void print_converter(converter *active);
 
+void edit_param(converter *active, int field);
+
 #endif
