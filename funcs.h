@@ -23,20 +23,14 @@ typedef struct {
     float C_n;
 } converter;
 
-
-int is_integer(const char *s);
-
-void menu_item_1(converter *active);
-void menu_item_2(converter *active);
-void menu_item_3(converter *active);
-void menu_item_4(converter *active);
-void menu_item_5(converter *active);
+int is_integer(const char *s); // checks iff parsed string can be converted to an int
 
 float get_float_input(void);
-int get_int_input(int max);
+int get_int_input(int *out);
 
-void print_converter(converter *active);
 
 void edit_param(converter *active, int field);
+
+enum conv_fields {V_O, V_I, I_O, I_I, R_L, F_S, D_I, D_V, D_I2 ,D_V2, L, C_O, L2, C_N};
 
 #endif

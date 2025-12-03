@@ -6,10 +6,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include <locale.h>
 #include "funcs.h"
 #include "colours.h"
 #include "converter.h"
+#include "menu_funcs.h"
 
 /* Prototypes mirroring the C++ version */
 static void main_menu(void);            /* runs in the main loop */
@@ -18,11 +18,11 @@ static int  get_user_input(void);       /* get a valid integer menu choice */
 static void select_menu_item(int input);/* run code based on user's choice */
 static void go_back_to_main(void);      /* wait for 'b'/'B' to continue */ 
 
-converter active;
+converter active; // currently selected converter
 
 int main(void)
 {
-    setlocale(LC_ALL, "");
+    
     /* this will run forever until we call exit(0) in select_menu_item() */
     for(;;) {
         main_menu();
@@ -83,22 +83,26 @@ static void select_menu_item(int input)
             go_back_to_main();
             break;
         case 2:
-            if (*active.name == '\0') {printf("Please set design name");go_back_to_main();}
+            // confirm currently selected converter name is set
+            if (*active.name == '\0') {printf("Please set design name"); go_back_to_main(); break;}
             menu_item_2(&active);
             go_back_to_main();
             break;
         case 3:
-            if (*active.name == '\0') {printf("Please set design name");go_back_to_main();}
+            // confirm currently selected converter name is set
+            if (*active.name == '\0') {printf("Please set design name"); go_back_to_main(); break;}
             menu_item_3(&active);
             go_back_to_main();
             break;
         case 4:
-            if (*active.name == '\0') {printf("Please set design name");go_back_to_main();}
+            // confirm currently selected converter name is set
+            if (*active.name == '\0') {printf("Please set design name"); go_back_to_main(); break;}
             menu_item_4(&active);
             go_back_to_main();
             break;
         case 5:
-            if (*active.name == '\0') {printf("Please set design name");go_back_to_main();}
+            // confirm currently selected converter name is set
+            if (*active.name == '\0') {printf("Please set design name"); go_back_to_main(); break;}
             menu_item_5(&active);
             go_back_to_main();
         default:
