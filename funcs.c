@@ -5,10 +5,11 @@
 
 #include "colours.h"
 #include "funcs.h"
+#include "menu_funcs.h"
 
 
 
-const char *input_fields[] = {"V_o\0", "V_i\0", "I_o\0", "I_i\0", "R_l\0", "F_s\0", "d_i\0", "d_v\0", "d_i2\0", "d_v2\0"};
+//const char *input_fields[] = {"V_o\0", "V_i\0", "I_o\0", "I_i\0", "R_l\0", "F_s\0", "d_i\0", "d_v\0", "d_i2\0", "d_v2\0"};
 
 
 
@@ -85,64 +86,153 @@ int get_int_input(int *out) {
 }
 
 void edit_param(converter *active, int field) {
+
     switch (field)
     {
     case V_O:
         printf("\nEnter a new V_o value: ");
         active->V_o = get_float_input();
-        printf("\nV_o changed to: %.4f", active->V_o);
+        printf("\nV_o set to: %.4f", active->V_o);
         break;
     case V_I:
         printf("\nEnter a new V_i value: ");
         active->V_i = get_float_input();
-        printf("\nV_i changed to: %.4f", active->V_i);
+        printf("\nV_i set to: %.4f", active->V_i);
         break;
     case I_O:
         printf("\nEnter a new I_o value: ");
         active->I_o = get_float_input();
-        printf("\nI_o changed to: %.4f", active->I_o);
+        printf("\nI_o set to: %.4f", active->I_o);
         break;
     case I_I:
         printf("\nEnter a new I_i value: ");
         active->I_i = get_float_input();
-        printf("\nI_i changed to: %.4f", active->I_i);
+        printf("\nI_i set to: %.4f", active->I_i);
         break;
     case R_L:
         printf("\nEnter a new R_l value: ");
         active->R_l = get_float_input();
-        printf("\nR_l changed to: %.4f", active->R_l);
+        printf("\nR_l set to: %.4f", active->R_l);
         break;
     case F_S:
         printf("\nEnter a new F_s value: ");
         active->F_s = get_float_input();
-        printf("\nF_s changed to: %.4f", active->F_s);
+        printf("\nF_s set to: %.4f", active->F_s);
         break;
     case D_I:
         printf("\nEnter a new delta_i value: ");
         active->i_rip = get_float_input();
-        printf("\ndelta_i changed to: %.4f", active->i_rip);
+        printf("\ndelta_i set to: %.4f", active->i_rip);
         break;
     case D_V:
         printf("\nEnter a new delta_v value: ");
         active->v_rip = get_float_input();
-        printf("\ndelta_v changed to: %.4f", active->v_rip);
+        printf("\ndelta_v set to: %.4f", active->v_rip);
         break;
     case D_I2:
         if (active->type > 2){
             printf("\nEnter a new delta_i2 value: ");
             active->i_rip2 = get_float_input();
-            printf("\ndelta_i2 changed to: %.4f", active->i_rip2);
+            printf("\ndelta_i2 set to: %.4f", active->i_rip2);
             break;
         } else {active->i_rip2 = -2; break;}
     case D_V2:
         if (active->type > 2){
             printf("\nEnter a new delta_v2 value: ");
             active->v_rip2 = get_float_input();
-            printf("\ndelta_v2 changed to: %.4f", active->v_rip2);
+            printf("\ndelta_v2 set to: %.4f", active->v_rip2);
             break;
         } else {active->v_rip2 = -2; break;} 
     default:
         printf("Invalid Selection");
         break;
     }
+}
+
+int compute_buck(converter *active){
+    print_converter(active);
+    int changes;
+    int missing = 0;
+    do {
+        changes = 0;
+        // duty cycle  
+        if (active->k == -1){      
+            if (active->V_o >= 0 && active->V_i >= 0){
+                active->k = active->V_o / active->V_i;
+                changes++;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            else if (active->I_o >= 0 && active->I_i >= 0) {
+                active->k = active->I_i / active->I_o;
+                changes++;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            else {missing++;}
+        }
+        // V_o
+        if (active->V_o == -1){
+            if (active->I_o >= 0 && active->R_l >= 0){
+                active->V_o = active->I_o * active->R_l;
+                changes++;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            else if (active->V_i >= 0 && active->k >= 0){
+                active->V_o = active->V_i * active->k;
+                changes++;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            else {missing++;}
+        }
+        // V_i
+        if (active->V_i == -1){
+            if (active->k >= 0 && active->V_o >= 0){
+                active->V_i = active->V_o / active->k;
+                changes++;
+                printf("V_i computed as: %.4f\n", active->V_i);
+            }
+            else {missing++;}
+        }
+        // I_o
+        if (active->I_o == -1){
+            if (active->V_o >= 0 && active->R_l >= 0){
+                active->I_o = active->V_o / active->R_l;
+                changes++;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            else if (active->I_i >= 0 && active->k >= 0){
+                active->I_o = active->I_i * active->k;
+                changes++;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            else {missing++;}
+        }
+        // I_i
+        if (active->I_i == -1){
+            if (active->k >= 0 && active->I_o >= 0){
+                active->I_i = active->I_o * active->k;
+                changes++;
+                printf("I_i computed as: %.4f\n", active->I_i);
+            }
+            else {missing++;}
+        }
+    } while (changes != 0 && missing != 0);
+    if (missing > 0){
+        printf("Converter computation failed, please provide more input parameters\n");
+    }
+    else {
+        printf("Converter computation successful, moving to component calculations...\n");
+    }
+}
+
+int compute_boost(converter *active){
+    printf("Function not yet implemented");
+    return 0;
+}
+int compute_buckboost(converter *active){
+    printf("Function not yet implemented");
+    return 0;
+}
+int compute_cuk(converter *active){
+    printf("Function not yet implemented");
+    return 0;
 }

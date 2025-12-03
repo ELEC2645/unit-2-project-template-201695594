@@ -31,13 +31,20 @@ void menu_item_1(converter *active) {
     active->name[sizeof(active->name)-1] = '\0';
     // confirm name selected
     printf("Design saved under: %s\n", active->name);
-    // print menyu of converter types
+    // print menu of converter types
     printf("Please select converter type:\n"
         RED"1. Buck\n"
         GREEN"2. Boost\n"
         BLUE"3. Buck-Boost\n"
         YELLOW"4. Cuk\n"RESET
         );
+    // set unknown component values
+    active->k = -1;
+    active->C_o = -1;
+    active->L = -1;
+    // assume addition parts for Cuk converter are not required
+    active->C_n = -2;
+    active->L2 = -2;
     // get an int input between 1 and 4
     int check_val;
     int param;
@@ -106,16 +113,16 @@ void menu_item_4(converter *active) {
     printf("\n>> Design computation\n");
     switch (active->type)
     {
-    case 0: // buck  converter
+    case 1: // buck  converter
         compute_buck(active);
         break;
-    case 1: // boost converter
+    case 2: // boost converter
         compute_boost(active);
         break;
-    case 2: // buck-boost converter
+    case 3: // buck-boost converter
         compute_buckboost(active);
         break;
-    case 3: // Cuk converter
+    case 4: // Cuk converter
         compute_cuk(active);
         break;
     default:

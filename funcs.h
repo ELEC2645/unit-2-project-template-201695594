@@ -21,6 +21,7 @@ typedef struct {
     float C_o;
     float L2;
     float C_n;
+    float k;
 } converter;
 
 int is_integer(const char *s); // checks iff parsed string can be converted to an int
