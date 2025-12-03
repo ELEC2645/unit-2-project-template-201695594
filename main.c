@@ -8,7 +8,6 @@
 #include <math.h>
 #include "funcs.h"
 #include "colours.h"
-#include "converter.h"
 #include "menu_funcs.h"
 
 /* Prototypes mirroring the C++ version */
