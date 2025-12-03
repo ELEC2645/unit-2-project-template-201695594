@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 
 #include "funcs.h"
 #include "menu_funcs.h"
@@ -100,10 +101,26 @@ void menu_item_3(converter *active) {
     
 }
 
+// computes converter components and missing values
 void menu_item_4(converter *active) {
-    printf("\n>> Menu 4\n");
-    printf("\nSome code here does something useful\n");
-    /* you can call a function from here that handles menu 4 */
+    printf("\n>> Design computation\n");
+    switch (active->type)
+    {
+    case 0: // buck  converter
+        compute_buck(active);
+        break;
+    case 1: // boost converter
+        compute_boost(active);
+        break;
+    case 2: // buck-boost converter
+        compute_buckboost(active);
+        break;
+    case 3: // Cuk converter
+        compute_cuk(active);
+        break;
+    default:
+        break;
+    }
 }
 
 void menu_item_5(converter *active) {
