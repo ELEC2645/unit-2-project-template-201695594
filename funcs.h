@@ -28,6 +28,10 @@ int is_integer(const char *s); // checks iff parsed string can be converted to a
 float get_float_input(void);
 int get_int_input(int *out);
 
+int compute_buck(converter *active);
+int compute_boost(converter *active);
+int compute_buckboost(converter *active);
+int compute_cuk(converter *active);
 
 void edit_param(converter *active, int field);
 
