@@ -139,13 +139,13 @@ void menu_item_5(converter *active) {
 // prints values of the fields of the passed converter struct
 void print_converter(converter *active) {
     printf(RED"\n\t\tName: %s", active->name);
-    printf("\n--------------------------------------------");
+    printf("\n---------------------------------------------------------");
     printf(RESET"\t\nType: %s", conv_types[active->type - 1]);
-    printf("\n--------------------------------------------");
-    printf("\n|1.\t V_o: %.4f   2. \tV_i: %.4f|", active->V_o, active->V_i);
-    printf("\n|3.\t I_o: %.4f   4. \tI_i: %.4f|", active->I_o, active->I_i);
-    printf("\n|5.\t R_l: %.4f   6. \tF_s: %.4f|", active->R_l, active->F_s);
-    printf("\n|7.  delta_i: %.4f   8.   delta_v: %.4f|", active->i_rip,active->v_rip);
-    printf("\n|9. delta_i2: %.4f  10.  delta_v2: %.4f|", active->i_rip2, active->v_rip2);
-    printf("\n--------------------------------------------\n\n");
+    printf("\n---------------------------------------------------------");
+    printf("\n|1.\t V_o: %.4f\t\t 2.    \tV_i: %.4f\t|", active->V_o, active->V_i);
+    printf("\n|3.\t I_o: %.4f\t\t 4.    \tI_i: %.4f\t|", active->I_o, active->I_i);
+    printf("\n|5.\t R_l: %.4f\t\t 6.    \tF_s: %.4f\t|", active->R_l, active->F_s);
+    printf("\n|7.  delta_i: %.4f\t\t 8. delta_v: %.4f\t|", active->i_rip,active->v_rip);
+    printf("\n|9. delta_i2: %.4f\t\t10.delta_v2: %.4f\t|", active->i_rip2, active->v_rip2);
+    printf("\n---------------------------------------------------------");
 }
