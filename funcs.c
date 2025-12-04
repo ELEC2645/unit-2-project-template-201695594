@@ -225,8 +225,78 @@ int compute_buck(converter *active){
 }
 
 int compute_boost(converter *active){
-    printf("Function not yet implemented");
-    return 0;
+    print_converter(active);
+    int changes;
+    int missing = 0;
+    do {
+        changes = 0;
+        // duty cycle  
+        if (active->k == -1){      
+            if (active->V_o >= 0 && active->V_i >= 0){
+                active->k = (active->V_o - active->V_i) / active->V_o;
+                changes++;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            else if (active->I_o >= 0 && active->I_i >= 0) {
+                active->k = (active->I_i - active->I_o) / active->I_i;
+                changes++;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            else {missing++;}
+        }
+        // V_o
+        if (active->V_o == -1){
+            if (active->I_o >= 0 && active->R_l >= 0){
+                active->V_o = active->I_o * active->R_l;
+                changes++;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            else if (active->V_i >= 0 && active->k >= 0){
+                active->V_o = active->V_i / (1 - active->k);
+                changes++;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            else {missing++;}
+        }
+        // V_i
+        if (active->V_i == -1){
+            if (active->k >= 0 && active->V_o >= 0){
+                active->V_i = active->V_o * (1 - active->k);
+                changes++;
+                printf("V_i computed as: %.4f\n", active->V_i);
+            }
+            else {missing++;}
+        }
+        // I_o
+        if (active->I_o == -1){
+            if (active->V_o >= 0 && active->R_l >= 0){
+                active->I_o = active->V_o / active->R_l;
+                changes++;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            else if (active->I_i >= 0 && active->k >= 0){
+                active->I_o = active->I_i * (1 - active->k);
+                changes++;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            else {missing++;}
+        }
+        // I_i
+        if (active->I_i == -1){
+            if (active->k >= 0 && active->I_o >= 0){
+                active->I_i = active->I_o / (1 - active->k);
+                changes++;
+                printf("I_i computed as: %.4f\n", active->I_i);
+            }
+            else {missing++;}
+        }
+    } while (changes != 0 && missing != 0);
+    if (missing > 0){
+        printf("Converter computation failed, please provide more input parameters\n");
+    }
+    else {
+        printf("Converter computation successful, moving to component calculations...\n");
+    }
 }
 int compute_buckboost(converter *active){
     printf("Function not yet implemented");
