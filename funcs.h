@@ -24,6 +24,8 @@ typedef struct {
     float k;
 } converter;
 
+void print_float(float val);
+
 int is_integer(const char *s); // checks iff parsed string can be converted to an int
 
 float get_float_input(void);
