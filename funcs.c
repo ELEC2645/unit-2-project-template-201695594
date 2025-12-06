@@ -459,6 +459,26 @@ int compute_buckboost(converter *active){
     else {
         printf("Converter computation successful, moving to component calculations...\n");
     }
+    // Compute required converter part values
+    // start with required inductor
+    if (active->i_rip > 0){
+        active->L = active->k * active->V_i / (active->F_s * active->i_rip);
+    }
+    else if (active->i_rip == 0){
+        printf("Achieving 0A of output ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; }
+
+    // calculate output capacitor value
+    if (active->v_rip > 0){
+        active->C_o = (active->I_o * active->k) / (active->v_rip * active->F_s);
+    }
+    else if (active->v_rip == 0){
+        printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; }
 }
 int compute_cuk(converter *active){
     print_converter(active,0);
