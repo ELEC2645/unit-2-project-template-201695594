@@ -563,4 +563,44 @@ int compute_cuk(converter *active){
     else {
         printf("Converter computation successful, moving to component calculations...\n");
     }
+    // Compute required converter part values
+    // start with first inductor
+    if (active->i_rip > 0){
+        active->L = active->k * active->V_i / (active->F_s * active->i_rip);
+    }
+    else if (active->i_rip == 0){
+        printf("Achieving 0A of ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; }
+
+    // calculate second inductor
+    if (active->i_rip2 > 0){
+        active->L = active->k * active->V_i / (active->F_s * active->i_rip2);
+    }
+    else if (active->i_rip2 == 0){
+        printf("Achieving 0A of ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; } 
+
+    // calculate output capacitor value
+    if (active->v_rip > 0){
+        active->C_o = (active->V_i * active->k) / (8 * active->F_s * active->F_s * active->v_rip * active->L2);
+    }
+    else if (active->v_rip == 0){
+        printf("Achieving 0V of input ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; }
+
+    // calculate C_n value
+    if (active->v_rip2 > 0){
+        active->C_o = (active->I_o * active->k) / (active->F_s * active->v_rip2);
+    }
+    else if (active->v_rip2 == 0){
+        printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; }
 }
