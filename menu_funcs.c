@@ -76,7 +76,7 @@ void menu_item_2(converter *active) {
         edit_param(active, i);
     }
     printf("\n Entered converter specs:\n");
-    print_converter(active);
+    print_converter(active, 0);
 }
 
 // called to select and edit design indiviual params
@@ -84,7 +84,7 @@ void menu_item_3(converter *active) {
     printf("\n>> Edit design parameters\n");
     printf("\nEnter the field you wish to edit\n");
     // print current converter fields
-    print_converter(active);
+    print_converter(active, 0);
     // get a field to edit
     printf("Enter option (enter 'C' or 'c' to cancel): ");
     int check_val;
@@ -110,23 +110,29 @@ void menu_item_3(converter *active) {
 
 // computes converter components and missing values
 void menu_item_4(converter *active) {
+    int solved;
     printf("\n>> Design computation\n");
     switch (active->type)
     {
     case 1: // buck  converter
-        compute_buck(active);
+        solved = compute_buck(active);
         break;
     case 2: // boost converter
-        compute_boost(active);
+        solved = compute_boost(active);
         break;
     case 3: // buck-boost converter
-        compute_buckboost(active);
+        solved = compute_buckboost(active);
         break;
     case 4: // Cuk converter
-        compute_cuk(active);
+        solved = compute_cuk(active);
         break;
     default:
         break;
+    }
+    if (!solved) {
+        printf("\nInsufficent input parameters, please provide more information\n");
+        printf("Redirecting to edit parameters menu...\n");
+        menu_item_3(active);
     }
 }
 
@@ -137,7 +143,7 @@ void menu_item_5(converter *active) {
 }
 
 // prints values of the fields of the passed converter struct
-void print_converter(converter *active) {
+void print_converter(converter *active, int flag) {
     printf(RED"\n\t\tName: %s", active->name);
     printf("\n---------------------------------------------------------");
     printf(RESET"\t\nType: %s", conv_types[active->type - 1]);
@@ -149,5 +155,11 @@ void print_converter(converter *active) {
     if (active->type == 4){
     printf("\n|9. delta_i2: ");print_float(active->i_rip2);printf("\t\t10.delta_v2: ");print_float(active->v_rip2);printf("\t|");
     }
-    printf("\n---------------------------------------------------------");
+    printf("\n---------------------------------------------------------\n");
+    if (flag){
+        // print extra values
+        printf("\n Converter Design \n");
+        printf("\n Inductor value: %.4e", active->L);
+        printf("\n Capacitor value: %.4e", active->C_o);
+    }
 }

@@ -162,7 +162,7 @@ void edit_param(converter *active, int field) {
 }
 
 int compute_buck(converter *active){
-    print_converter(active);
+    print_converter(active, 0);
     int changes;
     int missing = 0;
     do {
@@ -229,15 +229,35 @@ int compute_buck(converter *active){
         }
     } while (changes != 0 && missing != 0);
     if (missing > 0){
-        printf("Converter computation failed, please provide more input parameters\n");
+        return 0;
     }
     else {
         printf("Converter computation successful, moving to component calculations...\n");
     }
+    // Compute required converter part values
+    // start with required inductor
+    if (active->i_rip > 0){
+        active->L = (1 - active->k) * active->V_o / (active->F_s * active->i_rip);
+    }
+    else if (active->i_rip == 0){
+        printf("Achieving 0A of output ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; }
+
+    // calculate output capacitor value
+    if (active->v_rip > 0){
+        active->C_o = active->k * (active->V_i - active->V_o) / (8* active->F_s * active->F_s * active->v_rip * active->L);
+    }
+    else if (active->v_rip == 0){
+        printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; }
 }
 
 int compute_boost(converter *active){
-    print_converter(active);
+    print_converter(active,0);
     int changes;
     int missing = 0;
     do {
@@ -314,18 +334,177 @@ int compute_boost(converter *active){
     } while (changes != 0 && missing != 0);
     // warn user if not all values were able to be calculated
     if (missing > 0){
-        printf("Converter computation failed, please provide more input parameters\n");
-        return 1;
+        return 0;
     }
     else {
         printf("Converter computation successful, moving to component calculations...\n");
     }
 }
 int compute_buckboost(converter *active){
-    printf("Function not yet implemented");
-    return 0;
+    print_converter(active,0);
+    int changes;
+    int missing = 0;
+    do {
+        changes = 0;
+        // duty cycle  
+        if (active->k == -1){ 
+            // calculate k from voltage     
+            if (active->V_o >= 0 && active->V_i >= 0){
+                active->k = active->V_o / (active->V_i + active->V_o);
+                changes++;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            // calculate k from current
+            else if (active->I_o >= 0 && active->I_i >= 0) {
+                active->k = active->I_i / (active->I_o + active->I_i);
+                changes++;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+        // V_o
+        if (active->V_o == -1){
+            // calculate output voltage using Ohm's Law
+            if (active->I_o >= 0 && active->R_l >= 0){
+                active->V_o = active->I_o * active->R_l;
+                changes++;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            // calculate output voltage using duty ratio
+            else if (active->V_i >= 0 && active->k >= 0){
+                active->V_o = (active->V_i * active->k) / (1 - active->k);
+                changes++;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+        // V_i
+        if (active->V_i == -1){
+            // calculate input voltage using duty ratio
+            if (active->k >= 0 && active->V_o >= 0){
+                active->V_i = active->V_o * (1 - active->k) / active->k;
+                changes++;
+                printf("V_i computed as: %.4f\n", active->V_i);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+        // I_o
+        if (active->I_o == -1){
+            // calculate output current using Ohm's Law
+            if (active->V_o >= 0 && active->R_l >= 0){
+                active->I_o = active->V_o / active->R_l;
+                changes++;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            // calculate output current using duty ratio
+            else if (active->I_i >= 0 && active->k >= 0){
+                active->I_o = active->I_i * (1 - active->k) / active->k;
+                changes++;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+        // I_i
+        if (active->I_i == -1){
+            // calculate input current using duty ratio
+            if (active->k >= 0 && active->I_o >= 0){
+                active->I_i = (active->I_o * active->k) / (1 - active->k);
+                changes++;
+                printf("I_i computed as: %.4f\n", active->I_i);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+    // continue looping until no more changes are made or all the missing values are calculated
+    } while (changes != 0 && missing != 0);
+    // warn user if not all values were able to be calculated
+    if (missing > 0){
+        return 0;
+    }
+    else {
+        printf("Converter computation successful, moving to component calculations...\n");
+    }
 }
 int compute_cuk(converter *active){
-    printf("Function not yet implemented");
-    return 0;
+    print_converter(active,0);
+    int changes;
+    int missing = 0;
+    do {
+        changes = 0;
+        // duty cycle  
+        if (active->k == -1){ 
+            // calculate k from voltage     
+            if (active->V_o >= 0 && active->V_i >= 0){
+                active->k = active->V_o / (active->V_i + active->V_o);
+                changes++;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            // calculate k from current
+            else if (active->I_o >= 0 && active->I_i >= 0) {
+                active->k = active->I_i / (active->I_o + active->I_i);
+                changes++;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+        // V_o
+        if (active->V_o == -1){
+            // calculate output voltage using Ohm's Law
+            if (active->I_o >= 0 && active->R_l >= 0){
+                active->V_o = active->I_o * active->R_l;
+                changes++;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            // calculate output voltage using duty ratio
+            else if (active->V_i >= 0 && active->k >= 0){
+                active->V_o = (active->V_i * active->k) / (1 - active->k);
+                changes++;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+        // V_i
+        if (active->V_i == -1){
+            // calculate input voltage using duty ratio
+            if (active->k >= 0 && active->V_o >= 0){
+                active->V_i = active->V_o * (1 - active->k) / active->k;
+                changes++;
+                printf("V_i computed as: %.4f\n", active->V_i);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+        // I_o
+        if (active->I_o == -1){
+            // calculate output current using Ohm's Law
+            if (active->V_o >= 0 && active->R_l >= 0){
+                active->I_o = active->V_o / active->R_l;
+                changes++;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            // calculate output current using duty ratio
+            else if (active->I_i >= 0 && active->k >= 0){
+                active->I_o = active->I_i * (1 - active->k) / active->k;
+                changes++;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+        // I_i
+        if (active->I_i == -1){
+            // calculate input current using duty ratio
+            if (active->k >= 0 && active->I_o >= 0){
+                active->I_i = (active->I_o * active->k) / (1 - active->k);
+                changes++;
+                printf("I_i computed as: %.4f\n", active->I_i);
+            }
+            else {missing++;} // unable to calculate, increment missing value counter
+        }
+    // continue looping until no more changes are made or all the missing values are calculated
+    } while (changes != 0 && missing != 0);
+    // warn user if not all values were able to be calculated
+    if (missing > 0){
+        return 0;
+    }
+    else {
+        printf("Converter computation successful, moving to component calculations...\n");
+    }
 }

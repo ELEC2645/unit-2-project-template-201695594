@@ -7,6 +7,6 @@ void menu_item_3(converter *active); // edit individual converter parameters
 void menu_item_4(converter *active); // compute converter
 void menu_item_5(converter *active); // save/export converter design
 
-void print_converter(converter *active); // print a numbered list of all the parsed converter struct fields
+void print_converter(converter *active, int flag); // print a numbered list of all the parsed converter struct fields
 
 #endif /*MENU_FUNCS*/
