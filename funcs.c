@@ -171,11 +171,19 @@ int compute_buck(converter *active){
         if (active->k == -1){      
             if (active->V_o >= 0 && active->V_i >= 0){
                 active->k = active->V_o / active->V_i;
+                if (active->k > 1 || active->k < 0){
+                    printf(RED"Invalid V_o and V_i values.\nV_o must be less than or equal to V_i\n"RESET);
+                    return 0;
+                }
                 changes++;
                 printf("Duty cycle computed as: %.4f\n", active->k);
             }
             else if (active->I_o >= 0 && active->I_i >= 0) {
                 active->k = active->I_i / active->I_o;
+                if (active->k > 1 || active->k < 0){
+                    printf(RED"Invalid V_o and V_i values.\nV_o must be less than or equal to V_i\n"RESET);
+                    return 0;
+                }
                 changes++;
                 printf("Duty cycle computed as: %.4f\n", active->k);
             }
@@ -267,12 +275,20 @@ int compute_boost(converter *active){
             // calculate k from voltage     
             if (active->V_o >= 0 && active->V_i >= 0){
                 active->k = (active->V_o - active->V_i) / active->V_o;
+                if (active->k > 1 || active->k < 0){
+                    printf(RED"Invalid V_o and V_i values.\nV_i must be less than or equal to V_o\n"RESET);
+                    return 0;
+                }
                 changes++;
                 printf("Duty cycle computed as: %.4f\n", active->k);
             }
             // calculate k from current
             else if (active->I_o >= 0 && active->I_i >= 0) {
                 active->k = (active->I_i - active->I_o) / active->I_i;
+                if (active->k > 1 || active->k < 0){
+                    printf(RED"Invalid V_o and V_i values.\nV_i must be less than or equal to V_o\n"RESET);
+                    return 0;
+                }
                 changes++;
                 printf("Duty cycle computed as: %.4f\n", active->k);
             }
