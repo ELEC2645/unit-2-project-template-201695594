@@ -246,6 +246,7 @@ int compute_buck(converter *active){
     // start with required inductor
     if (active->i_rip > 0){
         active->L = (1 - active->k) * active->V_o / (active->F_s * active->i_rip);
+        printf("L computed as: %.4e\n", active->L);
     }
     else if (active->i_rip == 0){
         printf("Achieving 0A of output ripple is not possible, please enter a non-zero value.\n");
@@ -256,6 +257,7 @@ int compute_buck(converter *active){
     // calculate output capacitor value
     if (active->v_rip > 0){
         active->C_o = active->k * (active->V_i - active->V_o) / (8* active->F_s * active->F_s * active->v_rip * active->L);
+        printf("C_o computed as %.4e\n", active->C_o);
     }
     else if (active->v_rip == 0){
         printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");
@@ -359,6 +361,7 @@ int compute_boost(converter *active){
     // start with required inductor
     if (active->i_rip > 0){
         active->L = active->k * active->V_i / (active->F_s * active->i_rip);
+        printf("L computed as: %.4e\n", active->L);
     }
     else if (active->i_rip == 0){
         printf("Achieving 0A of output ripple is not possible, please enter a non-zero value.\n");
@@ -369,6 +372,7 @@ int compute_boost(converter *active){
     // calculate output capacitor value
     if (active->v_rip > 0){
         active->C_o = (active->I_o * active->k) / (active->v_rip * active->F_s);
+        printf("C_o computed as %.4e\n", active->C_o);
     }
     else if (active->v_rip == 0){
         printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");
@@ -463,6 +467,7 @@ int compute_buckboost(converter *active){
     // start with required inductor
     if (active->i_rip > 0){
         active->L = active->k * active->V_i / (active->F_s * active->i_rip);
+        printf("L computed as: %.4e\n", active->L);
     }
     else if (active->i_rip == 0){
         printf("Achieving 0A of output ripple is not possible, please enter a non-zero value.\n");
@@ -473,6 +478,7 @@ int compute_buckboost(converter *active){
     // calculate output capacitor value
     if (active->v_rip > 0){
         active->C_o = (active->I_o * active->k) / (active->v_rip * active->F_s);
+        printf("C_o computed as %.4e\n", active->C_o);
     }
     else if (active->v_rip == 0){
         printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");
@@ -567,6 +573,7 @@ int compute_cuk(converter *active){
     // start with first inductor
     if (active->i_rip > 0){
         active->L = active->k * active->V_i / (active->F_s * active->i_rip);
+        printf("L computed as: %.4e\n", active->L);
     }
     else if (active->i_rip == 0){
         printf("Achieving 0A of ripple is not possible, please enter a non-zero value.\n");
@@ -576,7 +583,8 @@ int compute_cuk(converter *active){
 
     // calculate second inductor
     if (active->i_rip2 > 0){
-        active->L = active->k * active->V_i / (active->F_s * active->i_rip2);
+        active->L2 = active->k * active->V_i / (active->F_s * active->i_rip2);
+        printf("L2 computed as: %.4e\n", active->L2);
     }
     else if (active->i_rip2 == 0){
         printf("Achieving 0A of ripple is not possible, please enter a non-zero value.\n");
@@ -587,6 +595,7 @@ int compute_cuk(converter *active){
     // calculate output capacitor value
     if (active->v_rip > 0){
         active->C_o = (active->V_i * active->k) / (8 * active->F_s * active->F_s * active->v_rip * active->L2);
+        printf("C_o computed as %.4e\n", active->C_o);
     }
     else if (active->v_rip == 0){
         printf("Achieving 0V of input ripple is not possible, please enter a non-zero value.\n");
@@ -596,7 +605,8 @@ int compute_cuk(converter *active){
 
     // calculate C_n value
     if (active->v_rip2 > 0){
-        active->C_o = (active->I_o * active->k) / (active->F_s * active->v_rip2);
+        active->C_n = (active->I_o * active->k) / (active->F_s * active->v_rip2);
+        printf("C_n computed as %.4e\n", active->C_n);
     }
     else if (active->v_rip2 == 0){
         printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");

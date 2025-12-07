@@ -151,7 +151,7 @@ void print_converter(converter *active, int flag) {
     printf("\n|1.\t V_o: ");print_float(active->V_o);printf("\t\t 2.    \tV_i: ");print_float(active->V_i);printf("\t|");
     printf("\n|3.\t I_o: ");print_float(active->I_o);printf("\t\t 4.    \tI_i: ");print_float(active->I_o);printf("\t|");
     printf("\n|5.\t R_l: ");print_float(active->R_l);printf("\t\t 6.    \tF_s: ");print_float(active->F_s);printf("\t|");
-    printf("\n|7.  delta_i:");print_float(active->i_rip);printf("\t\t 8. delta_v: ");print_float(active->v_rip);printf("\t|");
+    printf("\n|7.  delta_i: ");print_float(active->i_rip);printf("\t\t 8. delta_v: ");print_float(active->v_rip);printf("\t|");
     if (active->type == 4){
     printf("\n|9. delta_i2: ");print_float(active->i_rip2);printf("\t\t10.delta_v2: ");print_float(active->v_rip2);printf("\t|");
     }
