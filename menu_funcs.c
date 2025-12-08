@@ -6,6 +6,7 @@
 
 #include "funcs.h"
 #include "menu_funcs.h"
+#include "files.h"
 
 #include "colours.h"
 
@@ -51,9 +52,13 @@ void menu_item_1(converter *active) {
     do {
         check_val = get_int_input(&param);
         if (check_val == 0 && param <= 4){
-            // edit selected parameter
-            active->type = param;
-            printf("Selected type: "GREEN "%s", conv_types[active->type - 1]);
+            // edit type
+            
+            strncpy(active->s_type, conv_types[param -1], sizeof(active->s_type)-1);
+            active->s_type[sizeof(active->s_type)-1] = '\0';
+            
+            active->type = param; // set type flag
+            printf("Selected type: "GREEN "%s", active->s_type);
             printf(RESET);
             if (param == 4){ // set addtional cuk components to unknown
                 active->L2 = -1;
@@ -69,7 +74,7 @@ void menu_item_1(converter *active) {
 
 // called to sequentially set all of the converter's initial parameters
 void menu_item_2(converter *active) {
-    printf("\n>> New %s Converter\nType: ", conv_types[active->type - 1]);
+    printf("\n>> New %s Converter\nType: ", active->s_type);
     printf("\nPlease enter the prompted values for your  converter\nLeave unknown values blank\n");
     // edit each converter input field individually
     for (int i = 0; i < 10; i++){
@@ -138,16 +143,15 @@ void menu_item_4(converter *active) {
 }
 
 void menu_item_5(converter *active) {
-    printf("\n>> Menu 4\n");
-    printf("\nSome code here does something useful\n");
-    /* you can call a function from here that handles menu 4 */
+    /*PLACE HOLDER, WIP for file saving*/
+    write_converter("./saves/real_test.json", active);
 }
 
 // prints values of the fields of the passed converter struct
 void print_converter(converter *active, int flag) {
     printf(RED"\n\t\tName: %s", active->name);
     printf("\n---------------------------------------------------------");
-    printf(RESET"\t\nType: %s", conv_types[active->type - 1]);
+    printf(RESET"\t\nType: %s", active->s_type);
     printf("\n---------------------------------------------------------");
     printf("\n|1.\t V_o: ");print_float(active->V_o);printf("\t\t 2.    \tV_i: ");print_float(active->V_i);printf("\t|");
     printf("\n|3.\t I_o: ");print_float(active->I_o);printf("\t\t 4.    \tI_i: ");print_float(active->I_o);printf("\t|");

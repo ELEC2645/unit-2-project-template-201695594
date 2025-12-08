@@ -3,7 +3,8 @@
 
 typedef struct {
     // init parameter
-    int type; // 1-Buck 2-Boost 3-BuckBoost 4-Cuk 
+    int type; // type flag 
+    char s_type[16]; // type as a string
     char name[128];
     // input target specs
     float V_o; // average output voltage - V

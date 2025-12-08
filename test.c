@@ -2,6 +2,7 @@
 #include "funcs.h"
 #include "menu_funcs.h"
 #include "colours.h"
+#include "files.h"
 
 #include "stdio.h"
 
@@ -14,6 +15,7 @@ int cuk_test();
 converter test = {
     .name = "TestConverter",
     .type = 1,
+    .s_type = "Buck\0",
     .V_o = -1,
     .V_i = -1,
     .I_o = -1,
@@ -31,7 +33,7 @@ converter test = {
     .L2 = -2,
 };
 
-void main(void){
+int main(void){
     printf("Running converter compute tests...\n");
     // call each test
     int buck_res = buck_test();
@@ -48,6 +50,10 @@ void main(void){
     else {printf(RED"BUCK-BOOST TESTS FAILED\n"RESET);}
     if (cuk_res) { printf(GREEN"CUK TESTS PASSED\n"RESET);}
     else {printf(RED"CUK TESTS FAILED\n"RESET);}
+
+    printf("Writing test converter to json... \n");
+    int error = write_converter("./saves/test.json", &test);
+    if (!error) {printf("success");}
 }
 
 int buck_test(){
