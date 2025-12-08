@@ -9,14 +9,14 @@
 
 #include "colours.h"
 
-
+// used for easily printing converter type
 const char conv_types[][16] = {"Buck", "Boost", "Buck-Boost", "Cuk"};
 
 // used by the user to set a name and type for the currently active converter design
 void menu_item_1(converter *active) {
     char name_buf[128]; // read in buffer
     printf("\nPlease enter a filename for your new converter design: ");
-    if (!fgets(name_buf, sizeof(name_buf), stdin)) {
+    if (!fgets(name_buf, sizeof(name_buf), stdin)) { // <- here is where the string is read in
             /* EOF or error; bail out gracefully */
             puts("\nInput error. Exiting.");
             exit(1);
@@ -30,19 +30,19 @@ void menu_item_1(converter *active) {
     // ensure format is a string
     active->name[sizeof(active->name)-1] = '\0';
     // confirm name selected
-    printf("Design saved under: %s\n", active->name);
+    printf(YELLOW"Design saved under: %s\n", active->name);
     // print menu of converter types
-    printf("Please select converter type:\n"
-        RED"1. Buck\n"
-        GREEN"2. Boost\n"
-        BLUE"3. Buck-Boost\n"
-        YELLOW"4. Cuk\n"RESET
+    printf(GREEN"Please select converter type:\n"RESET
+        "1. Buck\n"
+        "2. Boost\n"
+        "3. Buck-Boost\n"
+        "4. Cuk\n"
         );
     // set unknown component values
     active->k = -1;
     active->C_o = -1;
-    active->L = -1;
-    // assume addition parts for Cuk converter are not required
+    active->L = -1;    
+    // assume additional parts for Cuk converter are not required
     active->C_n = -2;
     active->L2 = -2;
     // get an int input between 1 and 4
@@ -55,26 +55,27 @@ void menu_item_1(converter *active) {
             active->type = param;
             printf("Selected type: "GREEN "%s", conv_types[active->type - 1]);
             printf(RESET);
+            if (param == 4){ // set addtional cuk components to unknown
+                active->L2 = -1;
+                active->C_n = -1;
+            }
         }
-        else if (check_val == 1 || param > 4){
+        else if (check_val == 1 || param > 4){ // error msg if get_int_intput failed or param is out of scope
             printf(RED"Invalid menu selection" RESET "\nPlease select a converter type: ");
             check_val = 1;
         }
-        else {
-            printf("Cancelling edit");
-            break;
-        }
-    } while (check_val != 0);
+    } while (check_val != 0); // re-prompt until successful type selection
 }
 
 // called to sequentially set all of the converter's initial parameters
 void menu_item_2(converter *active) {
-    printf("\n>> New %s Converter\n", conv_types[active->type - 1]);
+    printf("\n>> New %s Converter\nType: ", conv_types[active->type - 1]);
     printf("\nPlease enter the prompted values for your  converter\nLeave unknown values blank\n");
     // edit each converter input field individually
     for (int i = 0; i < 10; i++){
-        edit_param(active, i);
+        edit_param(active, i); // edit ith param
     }
+    // print inputted specs
     printf("\n Entered converter specs:\n");
     print_converter(active, 0);
 }
@@ -98,7 +99,7 @@ void menu_item_3(converter *active) {
         else if (check_val == 1 || param > 10){
             printf("Invalid menu selection\nPlease select a field to edit: ");
         }
-        else {
+        else { // check_val == 2, user cancelled edit
             printf("Edit cancelled");
             break;
         }
@@ -110,7 +111,7 @@ void menu_item_3(converter *active) {
 
 // computes converter components and missing values
 void menu_item_4(converter *active) {
-    int solved;
+    int solved; // checks if converter computed successfully
     printf("\n>> Design computation\n");
     switch (active->type)
     {
@@ -129,7 +130,7 @@ void menu_item_4(converter *active) {
     default:
         break;
     }
-    if (!solved) {
+    if (!solved) { // compute functions fail is the covnerter needs more information
         printf("\nInsufficent input parameters, please provide more information\n");
         printf("Redirecting to edit parameters menu...\n");
         menu_item_3(active);

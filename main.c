@@ -41,7 +41,7 @@ static void main_menu(void)
 
 static int get_user_input(void)
 {
-    enum { MENU_ITEMS = 6 };   /* 1..4 = items, 5 = Exit */
+    enum { MENU_ITEMS = 6 };   /* 1..5 = items, 6 = Exit */
     char buf[128];
     int valid_input = 0;
     int value = 0;
@@ -78,24 +78,28 @@ static void select_menu_item(int input)
 {
     switch (input) {
         case 1:
-            menu_item_1(&active);
+            // used to set name and type of converter design
+            menu_item_1(&active); 
             go_back_to_main();
             break;
         case 2:
             // confirm currently selected converter name is set
             if (*active.name == '\0') {printf("Please set design name"); go_back_to_main(); break;}
+            // prompt user to enter design parameters
             menu_item_2(&active);
             go_back_to_main();
             break;
         case 3:
             // confirm currently selected converter name is set
             if (*active.name == '\0') {printf("Please set design name"); go_back_to_main(); break;}
+            // lets indiviual design parameters be edited
             menu_item_3(&active);
             go_back_to_main();
             break;
         case 4:
             // confirm currently selected converter name is set
             if (*active.name == '\0') {printf("Please set design name"); go_back_to_main(); break;}
+            // computes converter design, calculating missing values and component values
             menu_item_4(&active);
             go_back_to_main();
             break;
@@ -112,7 +116,7 @@ static void select_menu_item(int input)
 
 static void print_main_menu(void)
 {
-    printf(MAGENTA"\n----------- Main menu -----------\n"RESET);
+    printf(BLUE"\n----------- Main menu -----------\n"RESET);
     printf("\n"
            "\t\t\t\t\t\t\n"
            "\t1. Set converter type and name\t\t\n"
@@ -122,7 +126,7 @@ static void print_main_menu(void)
            "\t5. Load saved design\t\t\t\t\n"
            "\t6. Exit\t\t\t\t\n"
            "\t\t\t\t\t\t\n");
-    printf("---------------------------------------------\n");
+    printf(BLUE"---------------------------------------------\n"RESET);
 }
 
 static void go_back_to_main(void)
