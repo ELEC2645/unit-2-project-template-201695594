@@ -90,13 +90,13 @@ int write_converter(char *path, converter *data){
         printf("Error: Unable to open file\n");
         return 1;
     }
-    printf("%s\n", json_str);
-   fputs(json_str, fp);
-   fclose(fp);
-   // free the JSON string and cJSON object
-   cJSON_free(json_str);
-   cJSON_Delete(json);
-   return 0;
+    
+    fputs(json_str, fp);
+    fclose(fp);
+    // free the JSON string and cJSON object
+    cJSON_free(json_str);
+    cJSON_Delete(json);
+    return 0;
 }
 
 void print_saves(){
