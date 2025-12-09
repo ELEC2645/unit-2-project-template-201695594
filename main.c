@@ -108,6 +108,7 @@ static void select_menu_item(int input)
             go_back_to_main();
             break;
         default:
+            printf(RED"Exiting...\n"RESET);
             printf("Bye!\n");
             exit(0);
     }
@@ -115,9 +116,8 @@ static void select_menu_item(int input)
 
 static void print_main_menu(void)
 {
-    printf(BLUE"\n----------- Main menu -----------\n"RESET);
-    printf("\n"
-           "\t\t\t\t\t\t\n"
+    printf(BLUE"\n----------------- Main Menu -----------------\n"RESET);
+    printf("\t\t\t\t\t\t\n"
            "\t1. Set converter type and name\t\t\n"
            "\t2. Input converter parameters\t\t\n"
            "\t3. Edit converter parameters\t\t\n"
@@ -132,7 +132,7 @@ static void go_back_to_main(void)
 {
     char buf[64];
     do {
-        printf("\nEnter 'b' or 'B' to go back to main menu: ");
+        printf(GREEN"\nEnter 'b' or 'B' to go back to main menu: "RESET);
         if (!fgets(buf, sizeof(buf), stdin)) {
             puts("\nInput error. Exiting.");
             exit(1);

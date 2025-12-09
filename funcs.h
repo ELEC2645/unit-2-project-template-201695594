@@ -26,7 +26,7 @@ typedef struct {
 } converter;
 
 // prints passed float to 4 dp with additional colour formatting
-void print_float(float val);
+void print_float(float val, int flag);
 
  // checks if parsed string can be converted to an int
 int is_integer(const char *s);

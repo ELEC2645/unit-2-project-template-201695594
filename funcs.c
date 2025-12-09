@@ -12,15 +12,20 @@
 // val == -1 -> red
 // val > 0 -> green
 // val == -2 -> hidden
-void print_float(float val){
-    if (val == -1.0){
-        printf(RED"%.4f"WHITE, val);
-    }
-    else if (val == -2){
-        printf(HIDE"%.1f"RESET, val);
+void print_float(float val, int flag){
+    if (flag){
+        printf(BLUE"%.4e"RESET, val);
     }
     else {
-        printf(GREEN"%.4f"WHITE, val);
+        if (val == -1.0){
+            printf(RED"%.4f"WHITE, val);
+        }
+        else if (val == -2){
+            printf(HIDE"%.1f"RESET, val);
+        }
+        else {
+            printf(GREEN"%.4f"WHITE, val);
+        }
     }
 }
 
@@ -145,14 +150,14 @@ void edit_param(converter *active, int field) {
         printf("\ndelta_v set to: %.4fV", active->v_rip);
         break;
     case D_I2:
-        if (active->type > 2){ // only allow to change if buck-boost or cuk type
+        if (active->type == 4){ // only allow to change if buck-boost or cuk type
             printf("\nEnter a new delta_i2 value (A): ");
             active->i_rip2 = get_float_input();
             printf("\ndelta_i2 set to: %.4fA", active->i_rip2);
             break;
         } else {active->i_rip2 = -2; break;}
     case D_V2:
-        if (active->type > 2){ // only allow to change if buck-boost or cuk type
+        if (active->type == 4){ // only allow to change if buck-boost or cuk type
             printf("\nEnter a new delta_v2 value (V): ");
             active->v_rip2 = get_float_input();
             printf("\ndelta_v2 set to: %.4fV", active->v_rip2);
