@@ -45,6 +45,8 @@ int compute_boost(converter *active);
 int compute_buckboost(converter *active);
 int compute_cuk(converter *active);
 
+int compute_converter(converter *active);
+
 // used to edit 1 field of a converter struct
 // int field corresponds to followinng enum
 void edit_param(converter *active, int field);

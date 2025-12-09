@@ -104,7 +104,7 @@ int is_integer(const char *s)
     return 1;
 }
 
-// edits a parameter of a converter structfrom user input, int field flag selects field to edit
+// edits a parameter of a converter struct from user input, int field flag selects field to edit
 void edit_param(converter *active, int field) {
     // find correct field to edit and set value to user input
     switch (field)
@@ -150,19 +150,19 @@ void edit_param(converter *active, int field) {
         printf("\ndelta_v set to: %.4fV", active->v_rip);
         break;
     case D_I2:
-        if (active->type == 4){ // only allow to change if buck-boost or cuk type
+        if (active->type == 4){ // only allow to change if cuk type
             printf("\nEnter a new delta_i2 value (A): ");
             active->i_rip2 = get_float_input();
             printf("\ndelta_i2 set to: %.4fA", active->i_rip2);
             break;
-        } else {active->i_rip2 = -2; break;}
+        } else {active->i_rip2 = -2; break;} // skip if not Cuk converter
     case D_V2:
-        if (active->type == 4){ // only allow to change if buck-boost or cuk type
+        if (active->type == 4){ // only allow to change if  cuk type
             printf("\nEnter a new delta_v2 value (V): ");
             active->v_rip2 = get_float_input();
             printf("\ndelta_v2 set to: %.4fV", active->v_rip2);
             break;
-        } else {active->v_rip2 = -2; break;} 
+        } else {active->v_rip2 = -2; break;} // skip if not Cuk converter
     default:
         printf("Invalid Selection");
         break;
@@ -750,4 +750,340 @@ int compute_cuk(converter *active){
     else { return 0; } // other invalid value for v_rip2
 
     return 1; // computation of cuk converter was successful
+}
+
+int compute_converter(converter *active){
+    // print current configuration
+    print_converter(active, 1);
+    int changes;
+    int missing = 0;
+    do
+    {
+        changes = 0; // reset changes counter
+        // calculate duty cycle
+        if (active->k == -1){ // check if missing
+            missing++; // increment missing counter
+            if (active->V_o >= 0 && active->V_i >= 0){ // check if k can be calculated from voltage
+                switch (active->type)
+                {
+                case Buck:
+                    // k = Vo / Vi
+                    active->k = active->V_o / active->V_i; 
+                    break;
+                case Boost:
+                    // (Vo - Vi) / Vo
+                    active->k = (active->V_o - active->V_i) / active->V_o;
+                    break;
+                case BuckBoost:
+                    // k = Vo / (Vo + Vi)
+                    active->k = active->V_o / (active->V_i + active->V_o);
+                    break;
+                case Cuk:
+                    // k = Vo / (Vo + Vi)
+                    active->k = active->V_o / (active->V_i + active->V_o);
+                    break;
+
+                default:
+                    printf("Switch Error: Computing duty cycle from voltage failed");
+                    return 0;
+                }
+                if (active->k > 1 || active->k < 0){ // check calculated k is valid
+                    printf(RED"Duty cycle calculation failed.\nInvalid V_o and V_i values.\n"RESET);
+                    active->k = -1; // reset k
+                    return 0; // return an error if k is invalid
+                }
+                // valid k found, update counters, +1 change, -1 missing
+                changes++;
+                missing--;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+            else if (active->I_o >= 0 && active->I_i >= 0) { // check if k can be calculated from current
+                switch (active->type)
+                {
+                case Buck:
+                    // k = Ii / Io
+                    active->k = active->I_i / active->I_o; 
+                    break;
+                case Boost:
+                    // k = (Ii - Io) / Ii
+                    active->k = (active->I_i - active->I_o) / active->I_i;
+                    break;
+                case BuckBoost:
+                    // k = Ii / (Io + Ii)
+                    active->k = active->I_i / (active->I_o + active->I_i);
+                    break;
+                case Cuk:
+                    // k = Ii / (Io + Ii)
+                    active->k = active->I_i / (active->I_o + active->I_i);
+                    break;
+                
+                default:
+                    printf("Switch Error: Computing duty cycle from current failed");
+                    return 0;
+                }
+                if (active->k > 1 || active->k < 0){ // check calculated k is valid
+                    printf(RED"Duty cycle calculation failed.\nInvalid I_o and I_i values.\n"RESET);
+                    active->k = -1; // reset k
+                    return 0; // return an error if k is invalid
+                }
+                // valid k found, update counters, +1 change, -1 missing
+                changes++;
+                missing--;
+                printf("Duty cycle computed as: %.4f\n", active->k);
+            }
+        }
+        
+        // calculate V_o
+        if (active->V_o == -1){ //check if missing
+            missing++; // increment missing counter
+            // try and calculate output voltage using Ohm's Law
+            if (active->I_o >= 0 && active->R_l >= 0){
+                // no switch-case, same for all converter types
+                active->V_o = active->I_o * active->R_l; // v = IR
+                // V_o calculated, update counters, +1 change, -1 missing
+                changes++;
+                missing--;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }
+            // calculate output voltage using duty ratio
+            else if (active->V_i >= 0 && active->k >= 0){
+                switch (active->type)
+                {
+                case Buck:
+                    // Vo = Vi * k
+                    active->V_o = active->V_i * active->k; 
+                    break;
+                case Boost:
+                    // Vo = Vi / (1-k)
+                    active->V_o = active->V_i / (1 - active->k);
+                    break;
+                case BuckBoost:
+                    // Vo = k*Vi / (1-k)
+                    active->V_o = (active->V_i * active->k) / (1 - active->k);
+                    break;
+                case Cuk:
+                    // Vo = k*Vi / (1-k)
+                    active->V_o = (active->V_i * active->k) / (1 - active->k);
+                    break;
+                default:
+                    printf("Switch Error: Computing Vo from duty cycle failed");
+                    return 0;
+                }
+                // V_o calculated, update counters, +1 change, -1 missing
+                changes++;
+                missing--;
+                printf("V_o computed as: %.4f\n", active->V_o);
+            }         
+            
+        }
+
+        // calculate V_i
+        if (active->V_i == -1){ // check if missing
+            missing++;
+            if (active->k >= 0 && active->V_o >= 0){ // calculate from duty cycle
+                switch (active->type)
+                {
+                case Buck:
+                    active->V_i = active->V_o / active->k; // Vi = Vo / k
+                    break;
+                case Boost:
+                    active->V_i = active->V_o * (1 - active->k);
+                    break;
+                case BuckBoost:
+                    // Vi = Vo*(1-k) / k
+                    active->V_i = active->V_o * (1 - active->k) / active->k;
+                    break;
+                case Cuk:
+                    // Vi = Vo*(1-k) / k
+                    active->V_i = active->V_o * (1 - active->k) / active->k;
+                    break;
+                default:
+                    printf("Switch Error: Computing Vi from duty cycle failed");
+                    return 0;
+                }
+                
+                // update counters, +1 change, -1 missing
+                changes++;
+                missing--;
+                printf("V_i computed as: %.4f\n", active->V_i);
+            }
+        }
+
+        //calculate I_o
+        if (active->I_o == -1){ // check if missing
+            missing++; // increment missing counter
+            if (active->V_o >= 0 && active->R_l >= 0){ // calculate from Ohm's law
+                // no switch-case,same for all converter types
+                active->I_o = active->V_o / active->R_l; // Io = Vo / Rl
+                // update counters, +1 change, -1 missing
+                changes++;
+                missing--;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+            else if (active->I_i >= 0 && active->k >= 0){ // calculate from duty cycle
+                switch (active->type)
+                {
+                case Buck:
+                    // Io = Ii / k
+                    active->I_o = active->I_i / active->k;
+                    break;
+                case Boost:
+                    active->I_o = active->I_i * (1 - active->k);
+                    break;
+                case BuckBoost:
+                    // Io = Ii*(1-k) / k
+                    active->I_o = active->I_i * (1 - active->k) / active->k;
+                    break;
+                case Cuk:
+                    // Io = Ii*(1-k) / k
+                    active->I_o = active->I_i * (1 - active->k) / active->k;
+                    break;
+                default:
+                    printf("Switch Error: Computing Io from duty cycle failed");
+                    return 0;
+                }
+                
+                // update counters, +1 change, -1 missing
+                changes++;
+                missing--;
+                printf("I_o computed as: %.4f\n", active->I_o);
+            }
+        }
+
+        // calculate I_i
+        if (active->I_i == -1){ // check if missing
+            missing++; // increment missing counter
+            // calculate input current using duty ratio
+            if (active->k >= 0 && active->I_o >= 0){
+                switch (active->type)
+                {
+                case Buck:
+                    // Ii = Io * k
+                    active->I_i = active->I_o * active->k;
+                    break;
+                case Boost:
+                    //Ii = Io / (1-k)
+                    active->I_i = active->I_o / (1 - active->k);
+                    break;
+                case BuckBoost:
+                    // Ii = Io*k /(1-k)
+                    active->I_i = (active->I_o * active->k) / (1 - active->k);
+                    break;
+                case Cuk:
+                    // Ii = Io*k /(1-k)
+                    active->I_i = (active->I_o * active->k) / (1 - active->k);
+                    break;
+                default:
+                    printf("Switch Error: Computing Io from duty cycle failed");
+                    return 0;
+                }                
+                // update counters, +1 change, -1 missing
+                changes++;
+                missing--;
+                printf("I_i computed as: %.4f\n", active->I_i);
+            }
+        }
+    // keep looping until no changes are made or missing counter is 0
+    } while (missing != 0 && changes != 0);
+    // there are still missing values, return an error
+    if (missing > 0){
+        return 0;
+    }
+    else {
+        printf("Converter computation successful, moving to component calculations...\n");
+    }
+    // Compute required converter part values
+    // start with required inductor
+    if (active->i_rip > 0){ // check current ripple is valid
+        switch (active->type)
+            {
+            case Buck:
+                // L = (1-k)*Vo / (fs*di)
+                active->L = (1 - active->k) * active->V_o / (active->F_s * active->i_rip);
+                break;
+            case Boost:
+                // L = k*Vi / (Fs*dI)
+                active->L = active->k * active->V_i / (active->F_s * active->i_rip);
+                break;
+            case BuckBoost:
+                // L = Vi*k / (Fs*di)
+                active->L = active->k * active->V_i / (active->F_s * active->i_rip);
+                break;
+            case Cuk:
+                // L (1) = k*Vi / (Fs*dI)
+                active->L = active->k * active->V_i / (active->F_s * active->i_rip);
+                break;
+            default:
+                printf("Switch Error: Computing L failed");
+                return 0;
+            } 
+        printf("L computed as: %.4eH\n", active->L);
+    }
+    else if (active->i_rip == 0){ // desirable but physically impossible (requires inf L)
+        printf("Achieving 0A of output ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; } // other invalid value for i_rip
+
+// calculate extra components for Cuk converter
+    if (active->type == Cuk){
+         // calculate C_n value
+        if (active->v_rip2 > 0){ // check voltage ripple is valid
+            // Cn = Io*k / (Fs*dV2)
+            active->C_n = (active->I_o * active->k) / (active->F_s * active->v_rip2);
+            printf("C_n computed as %.4e\n", active->C_n);
+        }
+        else if (active->v_rip2 == 0){ // desirable but physically impossible (requires inf Co)
+            printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");
+            return 0;
+        }
+        else { return 0; } // other invalid value for v_rip2
+
+        // calculate second inductor
+        if (active->i_rip2 > 0){ // check current ripple is valid
+            // L2 = k*Vi / (Fs*dI2)
+            active->L2 = active->k * active->V_i / (active->F_s * active->i_rip2);
+            printf("L2 computed as: %.4e\n", active->L2);
+        }
+        else if (active->i_rip2 == 0){ // desirable but physically impossible (requires inf L)
+            printf("Achieving 0A of ripple is not possible, please enter a non-zero value.\n");
+            return 0;
+        }
+        else { return 0; } // other invalid value for i_rip2
+    }
+
+    // calculate output capacitor value
+    if (active->v_rip > 0){ // check voltage ripple is valid
+        switch (active->type)
+            {
+            case Buck:
+                // Co = k*(Vi-Vo) / (8*Fs^2*dVo*L)
+                active->C_o = active->k * (active->V_i - active->V_o) / (8* active->F_s * active->F_s * active->v_rip * active->L);
+                break;
+            case Boost:
+                // Co = Io*k / (dVo*Fs) 
+                active->C_o = (active->I_o * active->k) / (active->v_rip * active->F_s);
+                break;
+            case BuckBoost:
+                // Co = Io*k / dVo*Fs
+                active->C_o = (active->I_o * active->k) / (active->v_rip * active->F_s);
+                break;
+            case Cuk:
+                // Co = Vi*k / (8*Fs^2*dVo*L2)
+                active->C_o = (active->V_i * active->k) / (8 * active->F_s * active->F_s * active->v_rip * active->L2);
+                break;
+            default:
+                printf("Switch Error: Computing L failed");
+                return 0;
+            } 
+        
+        printf("C_o computed as %.4e\n", active->C_o);
+    }
+    else if (active->v_rip == 0){ // desirable but physically impossible (requires inf Co)
+        printf("Achieving 0V of output ripple is not possible, please enter a non-zero value.\n");
+        return 0;
+    }
+    else { return 0; } // other invalid value for v_rip
+    
+    return 1; // computation of converter successful
 }
