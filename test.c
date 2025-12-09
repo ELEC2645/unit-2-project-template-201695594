@@ -51,11 +51,11 @@ int main(void){
     if (cuk_res) { printf(GREEN"CUK TESTS PASSED\n"RESET);}
     else {printf(RED"CUK TESTS FAILED\n"RESET);}
 
-    printf("Reading test converter to json... \n");
+    /*printf("Reading test converter to json... \n");
     print_converter(&test, 1);
     int error = read_converter("./saves/test.json", &test);
     if (!error) {printf("success");}
-    print_converter(&test, 1);
+    print_converter(&test, 1);*/
 }
 
 int buck_test(){
@@ -69,7 +69,7 @@ int buck_test(){
     buck.v_rip = 3;
     buck.F_s = 10e3;
     // run compute option
-    menu_item_4(&buck);
+    compute_converter(&buck);
     // assume pass
     int pass = 1;
     // check values against expected
@@ -93,7 +93,7 @@ int boost_test(){
     boost.v_rip = 3;
     boost.F_s = 10e3;
     // run compute option
-    menu_item_4(&boost);
+    compute_converter(&boost);
     // assume pass
     int pass = 1;
     // check values against expected
@@ -118,7 +118,7 @@ int buckboost_test(){
     b_boost.v_rip = 3;
     b_boost.F_s = 10e3;
     // run compute option
-    menu_item_4(&b_boost);
+    compute_converter(&b_boost);
     // assume pass
     int pass = 1;
     // check values against expected
@@ -143,8 +143,10 @@ int cuk_test(){
     cuk.i_rip2 = 0.4;
     cuk.v_rip2 = 2;
     cuk.F_s = 10e3;
+    cuk.L2 = -1;
+    cuk.C_n = -1;
     // run compute option
-    menu_item_4(&cuk);
+    compute_converter(&cuk);
     // assume pass
     int pass = 1;
     // check values against expected
@@ -153,7 +155,7 @@ int cuk_test(){
     if (cuk.k != (float)0.75) {printf("k failed\n"); pass = 0;}
     if (cuk.L != (float)7.5e-3) {printf("L failed\n"); pass = 0;}
     if (cuk.L2 != (float)9.375e-3) {printf("L2 failed\n"); pass = 0;}
-    if (cuk.C_o != (float)5e-6 / 3) {printf("C_o failed\n"); pass = 0;}
+    if (cuk.C_o != (float)5e-6 / 3) {printf("C_o failed\n Expected: %.10e Got: %.10e\n",(float)3.5e-5 / 3.0, cuk.C_o); pass = 0;}
     if (cuk.C_n != (float)2.8125e-5) {printf("C_n failed\n"); pass = 0;}
     
     return pass; // results
