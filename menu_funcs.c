@@ -99,7 +99,7 @@ void menu_item_3(converter *active) {
         check_val = get_int_input(&param);
         if (check_val == 0 && param <= 10){
             // edit selected parameter
-            edit_param(active, param);
+            edit_param(active, param - 1);
         }
         else if (check_val == 1 || param > 10){
             printf("Invalid menu selection\nPlease select a field to edit: ");
@@ -156,7 +156,7 @@ void menu_item_5(converter *active) {
         case 1:
             /* code */
             // ensure current design has a specified name
-            if (active->name == '\0') {printf("Please set design name\n"); break;}
+            if (*active->name == '\0') {printf("Please set design name\n"); break;}
             printf("Saving current design to /saves/%s.json\n", active->name);
             char path[128] = "./saves/"; // string for save file path
             strcat(path, active->name); // add filename
