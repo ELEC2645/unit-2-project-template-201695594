@@ -179,6 +179,7 @@ int compute_buck(converter *active){
                 active->k = active->V_o / active->V_i;
                 if (active->k > 1 || active->k < 0){ // check calculated k is valid
                     printf(RED"Invalid V_o and V_i values.\nV_o must be less than or equal to V_i\n"RESET);
+                    active->k = -1; // reset k
                     return 0; // return an error if k is invalid
                 }
                 // update counters, +1 change, -1 missing
@@ -190,6 +191,7 @@ int compute_buck(converter *active){
                 active->k = active->I_i / active->I_o;
                 if (active->k > 1 || active->k < 0){ // check calculated k is valid
                     printf(RED"Invalid V_o and V_i values.\nI_i must be less than or equal to I_o\n"RESET);
+                    active->k = -1; // reset k
                     return 0; // return an error if k is invalid
                 }
                 // update counters, +1 change, -1 missing
@@ -261,7 +263,8 @@ int compute_buck(converter *active){
         }
     } while (changes != 0 && missing != 0); // keep looping until no changes are made or missing counter is 0
 
-    if (missing > 0){ // there are still missing values, return an error
+    if (missing > 0){ // there are still missing values return an error
+        
         return 0;
     }
     else {
@@ -311,6 +314,7 @@ int compute_boost(converter *active){
                 active->k = (active->V_o - active->V_i) / active->V_o;
                 if (active->k > 1 || active->k < 0){ // check calculated k is valid
                     printf(RED"Invalid V_o and V_i values.\nV_i must be less than or equal to V_o\n"RESET);
+                    active->k = -1; // reset k
                     return 0; // return an error if k is invalid
                 }
                 // update counters, +1 change, -1 missing
@@ -323,6 +327,7 @@ int compute_boost(converter *active){
                 active->k = (active->I_i - active->I_o) / active->I_i;
                 if (active->k > 1 || active->k < 0){ // check calculated k is valid
                     printf(RED"Invalid V_o and V_i values.\nV_i must be less than or equal to V_o\n"RESET);
+                    active->k = -1; // reset k
                     return 0; // return an error if k is invalid
                 }
                 // update counters, +1 change, -1 missing
@@ -447,6 +452,7 @@ int compute_buckboost(converter *active){
                 active->k = active->V_o / (active->V_i + active->V_o);
                 if (active->k > 1 || active->k < 0){ // check calculated k is valid (shouldn't be a probem with buck-boost)
                     printf(RED"Invalid V_o and V_i values.\n"RESET);
+                    active->k = -1; // reset k
                     return 0; // return an error if k is invalid
                 }
                 // update counters, +1 change, -1 missing
@@ -460,6 +466,7 @@ int compute_buckboost(converter *active){
                 active->k = active->I_i / (active->I_o + active->I_i);
                 if (active->k > 1 || active->k < 0){ // check calculated k is valid (shouldn't be a probem with buck-boost)
                     printf(RED"Invalid I_o and I_i values.\n"RESET);
+                    active->k = -1; // reset k
                     return 0; // return an error if k is invalid
                 }
                 // update counters, +1 change, -1 missing
@@ -589,6 +596,7 @@ int compute_cuk(converter *active){
                 active->k = active->V_o / (active->V_i + active->V_o);
                 if (active->k > 1 || active->k < 0){ // check calculated k is valid
                     printf(RED"Invalid V_o and V_i values.\n"RESET);
+                    active->k = -1; // reset k
                     return 0; // return an error if k is invalid
                 }
                 // update counters, +1 change, -1 missing
@@ -602,6 +610,7 @@ int compute_cuk(converter *active){
                 active->k = active->I_i / (active->I_o + active->I_i);
                 if (active->k > 1 || active->k < 0){ // check calculated k is valid
                     printf(RED"Invalid V_o and V_i values.\n"RESET);
+                    active->k = -1; // reset k
                     return 0; // return an error if k is invalid
                 }
                 // update counters, +1 change, -1 missing
