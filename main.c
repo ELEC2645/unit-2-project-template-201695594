@@ -104,8 +104,6 @@ static void select_menu_item(int input)
             go_back_to_main();
             break;
         case 5:
-            // confirm currently selected converter name is set
-            if (*active.name == '\0') {printf("Please set design name"); go_back_to_main(); break;}
             menu_item_5(&active);
             go_back_to_main();
             break;

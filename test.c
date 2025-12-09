@@ -51,9 +51,11 @@ int main(void){
     if (cuk_res) { printf(GREEN"CUK TESTS PASSED\n"RESET);}
     else {printf(RED"CUK TESTS FAILED\n"RESET);}
 
-    printf("Writing test converter to json... \n");
-    int error = write_converter("./saves/test.json", &test);
+    printf("Reading test converter to json... \n");
+    print_converter(&test, 1);
+    int error = read_converter("./saves/test.json", &test);
     if (!error) {printf("success");}
+    print_converter(&test, 1);
 }
 
 int buck_test(){

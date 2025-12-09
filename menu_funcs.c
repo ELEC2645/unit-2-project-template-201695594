@@ -143,8 +143,60 @@ void menu_item_4(converter *active) {
 }
 
 void menu_item_5(converter *active) {
-    /*PLACE HOLDER, WIP for file saving*/
-    write_converter("./saves/real_test.json", active);
+    printf("PLease select a file operation:\n");
+    printf("\t1. Save design\n");
+    printf("\t2. Load design\n");
+    printf("Enter option: ");
+    int check_val;
+    int option;
+    check_val = get_int_input(&option);
+    if (check_val == 0){
+        switch (option)
+        {
+        case 1:
+            /* code */
+            // ensure current design has a specified name
+            if (active->name == '\0') {printf("Please set design name\n"); break;}
+            printf("Saving current design to /saves/%s.json\n", active->name);
+            char path[128] = "./saves/"; // string for save file path
+            strcat(path, active->name); // add filename
+            strcat(path, ".json"); // append .json suffix
+            write_converter(path, active);
+            break;
+        
+        case 2:
+            printf("Currently saved designs:\n"YELLOW);
+            print_saves();
+            printf(RESET"Enter the save file to load: ");
+            char buf[64];
+            char lpath[128] = "./saves/";
+            if (!fgets(buf, sizeof(buf), stdin)) { // <- here is where the string is read in
+                /* EOF or error; bail out gracefully */
+                puts("\nInput error. Exiting.");
+                exit(1);
+            }
+            // strip end of line
+            buf[strcspn(buf, "\r\n")] = '\0';
+            // strip invalid characters
+            buf[strcspn(buf, " |?!/:;,()$.")] = 0;
+            buf[sizeof(buf)-1] = '\0';
+            printf("Input: %s\n", buf);
+            // join buf to path and load file
+            strcat(lpath, buf);
+            strcat(lpath, ".json");
+            printf("Loading file at path: %s\n", lpath);
+            read_converter(lpath, active);
+            print_converter(active, 0);
+            break;
+        
+        default:
+            printf("Invalid input\n");
+            break;
+        }
+    }
+    else {
+        printf("Invalid input\n");
+    }
 }
 
 // prints values of the fields of the passed converter struct
