@@ -120,9 +120,9 @@ static void print_main_menu(void)
     printf("\t\t\t\t\t\t\n"
            "\t1. Set converter type and name\t\t\n"
            "\t2. Input converter parameters\t\t\n"
-           "\t3. Edit converter parameters\t\t\n"
-           "\t4. Compute design\t\t\n"
-           "\t5. Load saved design\t\t\t\t\n"
+           "\t3. View/edit converter parameters\t\t\n"
+           "\t4. Compute current design\t\t\n"
+           "\t5. Save/load design\t\t\t\t\n"
            "\t6. Exit\t\t\t\t\n"
            "\t\t\t\t\t\t\n");
     printf(BLUE"---------------------------------------------\n"RESET);
