@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <string.h>
+#include "dirent.h" // library for retrieving info about files and directories: https://github.com/tronkko/dirent
 #include "cJSON.h" // library that implements basic .json parsing. from: https://github.com/DaveGamble/cJSON 
 #include "funcs.h"
 #include "menu_funcs.h"
 #include "files.h"
-
-//const char conv_types[][16] = {"Buck", "Boost", "Buck-Boost", "Cuk"};
 
 int read_converter(char *path, converter *target){
     // open file
@@ -14,12 +13,14 @@ int read_converter(char *path, converter *target){
         printf("Error: Unable to open file\n");
         return 1;
     }
+    // read file into buffer as a string
     char buffer[1024];
     fread(buffer, 1, sizeof(buffer),fp);
-    fclose(fp);
+    fclose(fp); // close file
 
     // create json object and parse read string
     cJSON *json = cJSON_Parse(buffer);
+    // error handling
     if (json == NULL){
         const char *error_ptr = cJSON_GetErrorPtr();
         if (error_ptr != NULL){
@@ -29,7 +30,7 @@ int read_converter(char *path, converter *target){
         return 1;
     }
 
-    // access json data
+    // access json data and add to target converter struct
     // string data:
     strncpy(target->name, cJSON_GetObjectItemCaseSensitive(json, "name")->valuestring, sizeof(target->name));
     strncpy(target->s_type, cJSON_GetObjectItemCaseSensitive(json, "type")->valuestring, sizeof(target->s_type));
@@ -51,8 +52,7 @@ int read_converter(char *path, converter *target){
     target->L = cJSON_GetObjectItemCaseSensitive(json, "L")->valuedouble;
     target->L2 = cJSON_GetObjectItemCaseSensitive(json, "L2")->valuedouble;
     target->k = cJSON_GetObjectItemCaseSensitive(json, "k")->valuedouble;
-
-   
+    // delete json to prevent any memory leaks
     cJSON_Delete(json);
     return 0;
 }
@@ -97,4 +97,18 @@ int write_converter(char *path, converter *data){
    cJSON_free(json_str);
    cJSON_Delete(json);
    return 0;
+}
+
+void print_saves(){
+    DIR *d;
+    struct dirent *dir;
+    d = opendir("./saves");
+    if (d)
+    {
+        while ((dir = readdir(d)) != NULL)
+        {
+            printf("%s\n", dir->d_name);
+        }
+        closedir(d);
+    }
 }
