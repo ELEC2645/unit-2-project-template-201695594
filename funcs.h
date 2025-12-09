@@ -50,5 +50,6 @@ int compute_cuk(converter *active);
 void edit_param(converter *active, int field);
 
 enum conv_fields {V_O, V_I, I_O, I_I, R_L, F_S, D_I, D_V, D_I2 ,D_V2, L, C_O, L2, C_N};
+enum conv_types {Buck = 1, Boost = 2, BuckBoost = 3, Cuk = 4};
 
 #endif
