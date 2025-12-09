@@ -2,6 +2,8 @@
 #include <string.h>
 #include "dirent.h" // library for retrieving info about files and directories: https://github.com/tronkko/dirent
 #include "cJSON.h" // library that implements basic .json parsing. from: https://github.com/DaveGamble/cJSON 
+
+
 #include "funcs.h"
 #include "menu_funcs.h"
 #include "files.h"
@@ -15,7 +17,7 @@ int read_converter(char *path, converter *target){
     }
     // read file into buffer as a string
     char buffer[1024];
-    fread(buffer, 1, sizeof(buffer),fp);
+    fread(buffer, 1, sizeof(buffer), fp);
     fclose(fp); // close file
 
     // create json object and parse read string
