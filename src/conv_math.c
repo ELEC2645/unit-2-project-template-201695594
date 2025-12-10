@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "conv_math.h"
+#include "include/conv_math.h"
 
-#include "colours.h"
+#include "include/colours.h"
 
 int KfromV(converter *active){
     switch (active->type)

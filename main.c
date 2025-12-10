@@ -6,9 +6,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include "funcs.h"
-#include "colours.h"
-#include "menu_funcs.h"
+#include "src/include/funcs.h"
+#include "src/include/colours.h"
+#include "src/include/menu_funcs.h"
 
 /* Prototypes mirroring the C++ version */
 static void main_menu(void);            /* runs in the main loop */

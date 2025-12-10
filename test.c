@@ -1,4 +1,5 @@
 /*TESTING FILE*/
+/*Used for testing individual functions/features during development*/
 #include "funcs.h"
 #include "menu_funcs.h"
 #include "colours.h"
@@ -70,6 +71,7 @@ int buck_test(){
     buck.F_s = 10e3;
     // run compute option
     compute_converter(&buck);
+    print_converter(&buck, 1);
     // assume pass
     int pass = 1;
     // check values against expected
@@ -94,6 +96,7 @@ int boost_test(){
     boost.F_s = 10e3;
     // run compute option
     compute_converter(&boost);
+    print_converter(&boost, 1);
     // assume pass
     int pass = 1;
     // check values against expected
@@ -119,6 +122,7 @@ int buckboost_test(){
     b_boost.F_s = 10e3;
     // run compute option
     compute_converter(&b_boost);
+    print_converter(&b_boost, 1);
     // assume pass
     int pass = 1;
     // check values against expected
@@ -147,6 +151,7 @@ int cuk_test(){
     cuk.C_n = -1;
     // run compute option
     compute_converter(&cuk);
+    print_converter(&cuk, 1);
     // assume pass
     int pass = 1;
     // check values against expected

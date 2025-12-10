@@ -4,11 +4,11 @@
 #include <ctype.h>
 #include <math.h>
 
-#include "funcs.h"
-#include "menu_funcs.h"
-#include "files.h"
+#include "include/funcs.h"
+#include "include/menu_funcs.h"
+#include "include/files.h"
 
-#include "colours.h"
+#include "include/colours.h"
 
 // used for easily printing converter type
 const char conv_types[][16] = {"Buck", "Boost", "Buck-Boost", "Cuk"};
@@ -117,25 +117,8 @@ void menu_item_3(converter *active) {
 
 // computes converter components and missing values
 void menu_item_4(converter *active) {
-    int solved; // checks if converter computed successfully
     printf(CYAN"\n>> Design computation\n"RESET);
-    switch (active->type)
-    {
-    case 1: // buck  converter
-        solved = compute_buck(active);
-        break;
-    case 2: // boost converter
-        solved = compute_boost(active);
-        break;
-    case 3: // buck-boost converter
-        solved = compute_buckboost(active);
-        break;
-    case 4: // Cuk converter
-        solved = compute_cuk(active);
-        break;
-    default:
-        break;
-    }
+    int solved = compute_converter(active); // checks if converter computed successfully
     if (!solved) { // compute functions fail if the covnerter needs more information
         printf("\nInsufficent input parameters, please provide more information\n");
         printf("Redirecting to edit parameters menu...\n");

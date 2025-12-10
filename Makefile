@@ -4,8 +4,10 @@
 # 
 # Note to students: You dont need to fully understand this! 
 
+
+
 main.out:
-	gcc main.c funcs.c converter.c -o main.out -lm
+	gcc main.c ./src/funcs.c ./src/files.c ./src/menu_funcs.c ./src/lib/cJSON.c ./src/conv_math.c -o main.out -lm -Wall -Wextra
 
 clean:
 	-rm main.out

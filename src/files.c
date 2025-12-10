@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
-#include "dirent.h" // library for retrieving info about files and directories: https://github.com/tronkko/dirent
-#include "cJSON.h" // library that implements basic .json parsing. from: https://github.com/DaveGamble/cJSON 
+#include "lib/dirent.h" // library for retrieving info about files and directories: https://github.com/tronkko/dirent
+#include "lib/cJSON.h" // library that implements basic .json parsing. from: https://github.com/DaveGamble/cJSON 
 
 
-#include "funcs.h"
-#include "menu_funcs.h"
-#include "files.h"
+#include "include/funcs.h"
+#include "include/menu_funcs.h"
+#include "include/files.h"
 
 int read_converter(char *path, converter *target){
     // open file
