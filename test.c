@@ -1,9 +1,9 @@
 /*TESTING FILE*/
 /*Used for testing individual functions/features during development*/
-#include "funcs.h"
-#include "menu_funcs.h"
-#include "colours.h"
-#include "files.h"
+#include "src/include/funcs.h"
+#include "src/include/menu_funcs.h"
+#include "src/include/colours.h"
+#include "src/include/files.h"
 
 #include "stdio.h"
 
