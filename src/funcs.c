@@ -182,7 +182,7 @@ int compute_converter(converter *active){
         // calculate duty cycle
         if (active->k == -1){ // check if missing
             missing++; // increment missing counter
-            if (active->V_o >= 0 && active->V_i >= 0){ // check if k can be calculated from voltage
+            if (active->V_o > 0 && active->V_i > 0){ // check if k can be calculated from voltage
                 if (!KfromV(active)){
                     // valid k found, update counters, +1 change, -1 missing
                     changes++;
@@ -190,7 +190,7 @@ int compute_converter(converter *active){
                     printf("Duty cycle computed as: %.4f\n", active->k);
                 }
             }
-            else if (active->I_o >= 0 && active->I_i >= 0) { // check if k can be calculated from current
+            else if (active->I_o > 0 && active->I_i > 0) { // check if k can be calculated from current
                 if (!KfromI(active)){
                     // valid k found, update counters, +1 change, -1 missing
                     changes++;
@@ -204,7 +204,7 @@ int compute_converter(converter *active){
         if (active->V_o == -1){ //check if missing
             missing++; // increment missing counter
             // try and calculate output voltage using Ohm's Law
-            if (active->I_o >= 0 && active->R_l >= 0){
+            if (active->I_o > 0 && active->R_l > 0){
                 if (!VofromOhm(active)){
                     // V_o calculated, update counters, +1 change, -1 missing
                     changes++;
@@ -213,7 +213,7 @@ int compute_converter(converter *active){
                 }
             }
             // try calculate output voltage using duty ratio
-            else if (active->V_i >= 0 && active->k >= 0){
+            else if (active->V_i > 0 && active->k > 0){
                 if (!VofromK(active)){
                     // V_o calculated, update counters, +1 change, -1 missing
                     changes++;
@@ -227,7 +227,7 @@ int compute_converter(converter *active){
         // calculate V_i
         if (active->V_i == -1){ // check if missing
             missing++;
-            if (active->k >= 0 && active->V_o >= 0){ // try to calculate from duty cycle
+            if (active->k > 0 && active->V_o > 0){ // try to calculate from duty cycle
                 if (!VifromK(active)){               
                     // update counters, +1 change, -1 missing
                     changes++;
@@ -240,7 +240,7 @@ int compute_converter(converter *active){
         //calculate I_o
         if (active->I_o == -1){ // check if missing
             missing++; // increment missing counter
-            if (active->V_o >= 0 && active->R_l >= 0){ // try to calculate from Ohm's law
+            if (active->V_o > 0 && active->R_l > 0){ // try to calculate from Ohm's law
                 if (!IofromOhm(active)){
                     // update counters, +1 change, -1 missing
                     changes++;
@@ -248,7 +248,7 @@ int compute_converter(converter *active){
                     printf("I_o computed as: %.4f\n", active->I_o);
                 }
             }
-            else if (active->I_i >= 0 && active->k >= 0){ // try to calculate from duty cycle
+            else if (active->I_i > 0 && active->k > 0){ // try to calculate from duty cycle
                 if (!IofromK(active)){                
                     // update counters, +1 change, -1 missing
                     changes++;
@@ -262,7 +262,7 @@ int compute_converter(converter *active){
         if (active->I_i == -1){ // check if missing
             missing++; // increment missing counter
             // try to calculate input current using duty ratio
-            if (active->k >= 0 && active->I_o >= 0){
+            if (active->k > 0 && active->I_o > 0){
                 if (!IifromK(active)){ 
                     // update counters, +1 change, -1 missing
                     changes++;

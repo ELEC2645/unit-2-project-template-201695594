@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "lib/dirent.h" // library for retrieving info about files and directories: https://github.com/tronkko/dirent
-#include "include/cJSON.h" // library that implements basic .json parsing. from: https://github.com/DaveGamble/cJSON 
+#include "lib/cJSON.h" // library that implements basic .json parsing. from: https://github.com/DaveGamble/cJSON 
 
 
 #include "include/funcs.h"

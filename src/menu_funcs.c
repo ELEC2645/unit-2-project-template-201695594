@@ -198,7 +198,7 @@ void print_converter(converter *active, int flag) {
     printf(RESET"\t\nType: %s", active->s_type);
     printf("\n---------------------------------------------------------");
     printf("\n|1.\t V_o: ");print_float(active->V_o, 0);printf("\t\t 2.    \tV_i: ");print_float(active->V_i, 0);printf("\t|");
-    printf("\n|3.\t I_o: ");print_float(active->I_o, 0);printf("\t\t 4.    \tI_i: ");print_float(active->I_o, 0);printf("\t|");
+    printf("\n|3.\t I_o: ");print_float(active->I_o, 0);printf("\t\t 4.    \tI_i: ");print_float(active->I_i, 0);printf("\t|");
     printf("\n|5.\t R_l: ");print_float(active->R_l, 0);printf("\t\t 6.    \tF_s: ");print_float(active->F_s,0);printf("\t|");
     printf("\n|7.  delta_i: ");print_float(active->i_rip, 0);printf("\t\t 8. delta_v: ");print_float(active->v_rip, 0);printf("\t|");
     if (active->type == 4){

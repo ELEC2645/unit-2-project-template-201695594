@@ -17,7 +17,23 @@ static int  get_user_input(void);       /* get a valid integer menu choice */
 static void select_menu_item(int input);/* run code based on user's choice */
 static void go_back_to_main(void);      /* wait for 'b'/'B' to continue */ 
 
-converter active; // currently selected converter
+converter active = { // currently selected converter with all parameters initialised to -1
+    .V_o = -1,
+    .V_i = -1,
+    .I_o = -1,
+    .I_i = -1,
+    .F_s = -1,
+    .R_l = -1,
+    .i_rip = -1,
+    .v_rip = -1,
+    .i_rip2 = -2,
+    .v_rip2 = -2,
+    .k = -1,
+    .C_n = -2,
+    .C_o = -1,
+    .L = -1,
+    .L2 = -2
+}; 
 
 int main(void)
 {
@@ -116,6 +132,7 @@ static void select_menu_item(int input)
 
 static void print_main_menu(void)
 {
+    printf(GREEN"\n--------- DC-DC CONVERTER CALCULATOR --------");
     printf(BLUE"\n----------------- Main Menu -----------------\n"RESET);
     printf("\t\t\t\t\t\t\n"
            "\t1. Set converter type and name\t\t\n"
