@@ -13,13 +13,13 @@ The app can be run with `./main.out`
 
 ### 2 Project File Structure
 
-The project is based on the provided template from the project brief but has been expanded to include several more files and libraries. These are:
+The project is based on the provided template from the assignment brief but has been expanded to include several more files and libraries. These are:
 
 - `main.c` - Very similar to the template version, this handles the running of the main menu interface and has simply been adapted to handle new versions of the `menu_item_x` functions in `menu_funcs.c`
  - `menu_funcs.c` - This files contains the functions for each of the 5 main menu options.
  - `funcs.c` - This is the main library of functions for the project. It contains functions for configuring converter design, calculating design values and handling user inputs
  - `files.c` - This holds functions for handling saving/loading converter designs to and from .json files stored in the `/saves` directory.
-- `conv_math.c` - This has functions that implement all the base equations needed for calculating the coonverter designs. These were split into discrete functions to improve readability of the `compute_converter` function in `funcs.c`
+- `conv_math.c` - This has functions that implement all the base equations needed for calculating the converter designs. These were split into discrete functions to improve readability of the `compute_converter` function in `funcs.c`
 
 All library source files are stored in the `/src` directory, with `.h` files in `/src/include` and external library source files in `/src/lib`.
 
@@ -74,7 +74,7 @@ The parameters are:
 |R_l| Ohm | The resistance of the connected load |
 |i_rip| A | The maximum current ripple through the primary inductor|
 |v_rip| V |The maximum voltage ripple at the output|
-|i_rip2|A| Thee maximum current ripple through the secondary inductor (Ćuk converters only)|
+|i_rip2|A| The maximum current ripple through the secondary inductor (Ćuk converters only)|
 |v_rip2|V| The maximum voltage ripple through the transfer capacitor, Cn (Ćuk converters only)|
 
 Once all the parameters have been entered, a summary is printed and the user is prompted to return to the main menu.
@@ -167,8 +167,4 @@ Type: Boost
  - *Saving* writes the current converter design to  `/saves/NAME.json` where NAME is the name field set under menu option 1.
 
 
-### 4 Submit Solution
 
-Use the same method as previous labs to commit and push your code to your GitHub repository for the autograder to check. 
-
-In your final journal post, please include a link to your GitHub repository containing your code  *and* a zip file of your code as an attachment.
