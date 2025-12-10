@@ -323,7 +323,7 @@ int compute_converter(converter *active){
 
     // calculate output capacitor value
     if (active->v_rip > 0){ // check voltage ripple is valid
-        if (calc_Co(active)){        
+        if (!calc_Co(active)){        
             printf("C_o computed as %.4e\n", active->C_o);
         }
     }
