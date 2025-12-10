@@ -13,7 +13,7 @@ test.out:
 	gcc test.c ./src/funcs.c ./src/files.c ./src/menu_funcs.c ./src/lib/cJSON.c ./src/conv_math.c -o test.out -lm -Wall -Wextra
 
 clean:
-	-rm main.out
+	-rm main.out test.out
 
 test: clean main.out
 	bash test.sh
